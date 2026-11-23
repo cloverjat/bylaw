@@ -1,0 +1,16 @@
+{
+  "name": "@bylaw/web",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "esbuild": "^0.28.2"
+  }
+}

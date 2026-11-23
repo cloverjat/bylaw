@@ -5,3 +5,4 @@ broadcast/
 .env
 *.key
 .DS_Store
+dist/

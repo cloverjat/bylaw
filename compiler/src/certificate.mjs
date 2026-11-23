@@ -11,7 +11,7 @@ export function certify(spec) {
       version: 1,
       name: spec.name,
       specSha256: sha256(JSON.stringify(spec)),
-      netlistSha256: sha256(Buffer.from(circuit.bytes)),
+      netlistSha256: sha256(circuit.bytes),
       inputPins: nIn,
       gates: circuit.nGates,
       inputsChecked: proof.checked,

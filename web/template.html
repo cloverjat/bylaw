@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bylaw: rules your money can't break</title>
+<style>
+:root{--ink:#0E1B2C;--mint:#34D399;--bg:#f7f9fb;--line:#dbe3ea}
+*{box-sizing:border-box}body{margin:0;font:16px/1.5 Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:var(--ink);color:#fff;padding:28px 20px}
+header h1{margin:0;font-size:28px}header p{margin:6px 0 0;color:var(--mint);font-size:18px}
+main{max-width:760px;margin:0 auto;padding:20px}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px}
+label{display:block;margin:10px 0;font-size:14px}select,input{display:block;width:100%;margin-top:4px;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit}
+.sentence{font-size:20px;font-weight:600}
+.ok{color:#047857;font-weight:600}.bad{color:#b91c1c;font-weight:700}
+pre{background:#0E1B2C;color:#d1fae5;padding:12px;border-radius:8px;overflow:auto;font-size:12px;white-space:pre-wrap;word-break:break-all}
+small,.note{color:#52606d;font-size:13px}.err{color:#b91c1c}
+</style></head><body>
+<header><h1>Bylaw</h1><p>Rules your money can't break.</p></header>
+<main>
+<div class="card"><label>Pick a rule<select id="tpl"></select></label><p class="note" id="blurb"></p><div id="params"></div><p class="err" id="error"></p></div>
+<div id="out" class="card" hidden>
+<small>What this rule says. Read it: the proof only checks the circuit against this rule.</small>
+<p class="sentence" id="sentence"></p>
+<p id="status"></p>
+<small>Proof certificate</small><pre id="cert"></pre>
+<small>Circuit (<span id="gates"></span>), ready to tape out on X Layer</small><pre id="netlist"></pre>
+</div>
+<p class="note">Experimental and unaudited. Not affiliated with OKX or TapeOut. The proof shows the circuit matches the rule above; it cannot tell whether the rule is what you meant.</p>
+</main>
+<script>/*APP*/</script>
+</body></html>
