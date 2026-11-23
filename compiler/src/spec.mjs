@@ -8,7 +8,7 @@
 // }
 // ops: and, or, not, flag, cmp (eq neq lt lte gt gte). Operands: {field} or {const}.
 import { Builder, CONST0, CONST1 } from './netlist.mjs';
-import { createHash } from 'node:crypto';
+import { sha256 as sha256bytes } from './sha256.mjs';
 
 export function layout(spec) {
   let pin = 0;
@@ -24,7 +24,10 @@ export function layout(spec) {
 
 function operandBits(b, map, o, width) {
   let sigs;
-  if (o.field !== undefined) {
+  if (o.add !== undefined) {
+    const w = Math.max(widthOf(map, o.add[0]), widthOf(map, o.add[1]));
+    sigs = b.add(operandBits(b, map, o.add[0], w), operandBits(b, map, o.add[1], w));
+  } else if (o.field !== undefined) {
     const f = map[o.field];
     if (!f) throw new Error(`unknown field ${o.field}`);
     sigs = Array.from({ length: f.bits }, (_, i) => b.input(f.from + i));
@@ -37,7 +40,11 @@ function operandBits(b, map, o, width) {
   while (sigs.length < width) sigs.push(CONST0);
   return sigs;
 }
-const widthOf = (map, o) => (o.field !== undefined ? map[o.field]?.bits ?? 0 : Math.max(1, o.const.toString(2).length));
+function widthOf(map, o) {
+  if (o.add !== undefined) return Math.max(widthOf(map, o.add[0]), widthOf(map, o.add[1])) + 1;
+  if (o.field !== undefined) return map[o.field]?.bits ?? 0;
+  return Math.max(1, o.const.toString(2).length);
+}
 
 function eq(b, A, B) {
   let r = b.xnor(A[0], B[0]);
@@ -84,7 +91,7 @@ export function compileSpec(spec) {
 export function interpretSpec(spec, bits) {
   const { map } = layout(spec);
   const val = (name) => { const f = map[name]; let v = 0; for (let i = 0; i < f.bits; i++) v += bits[f.from + i] * 2 ** i; return v; };
-  const opv = (o) => (o.field !== undefined ? val(o.field) : o.const);
+  const opv = (o) => (o.add !== undefined ? opv(o.add[0]) + opv(o.add[1]) : o.field !== undefined ? val(o.field) : o.const);
   const go = (e) => {
     switch (e.op) {
       case 'and': return e.args.every(go);
@@ -100,4 +107,4 @@ export function interpretSpec(spec, bits) {
   return [go(spec.rule) ? 1 : 0];
 }
 
-export const sha256 = (data) => createHash('sha256').update(data).digest('hex');
+export const sha256 = (data) => sha256bytes(typeof data === 'string' ? new TextEncoder().encode(data) : data);

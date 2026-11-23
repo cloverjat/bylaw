@@ -47,6 +47,20 @@ export class Builder {
     return r;
   }
 
+  // Ripple-carry adder. A, B: arrays of signals (LSB first), same width. Returns width+1 signals.
+  add(A, B) {
+    if (A.length !== B.length) throw new Error('width mismatch');
+    const out = [];
+    let carry = CONST0;
+    for (let i = 0; i < A.length; i++) {
+      const x = this.xor(A[i], B[i]);
+      out.push(this.xor(x, carry));
+      carry = this.or(this.and(A[i], B[i]), this.and(x, carry));
+    }
+    out.push(carry);
+    return out;
+  }
+
   // Finish: the last nOut gates must be the outputs, so each output is
   // copied through a double inverter placed at the very end.
   build(outputs) {
