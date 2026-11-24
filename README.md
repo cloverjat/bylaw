@@ -4,7 +4,7 @@
 
 Pick a money rule, read it back in plain words, and Bylaw proves the circuit matches it on every possible input. The circuit is then locked on X Layer using TapeOut, so nobody can quietly change it, not even us.
 
-> Status: early build for the OKX Build X "X Layer TapeOut Accelerate" hackathon. **Experimental and unaudited. Not yet deployed on X Layer.** Do not use with money you can't lose.
+> Status: early build for the OKX Build X "X Layer TapeOut Accelerate" hackathon. **Experimental and unaudited. Circuit and demo circle are live on X Layer mainnet (see docs/DEPLOYMENTS.md).** Do not use with money you can't lose.
 
 ## What works today
 
@@ -15,8 +15,9 @@ Pick a money rule, read it back in plain words, and Bylaw proves the circuit mat
 | Four free rule templates: circle payout, daily cap, trusted recipients, confirm big payments | Working, every one proven over all inputs |
 | Web demo that proves rules in the browser (`web/`) | Working |
 | **Bylaw Circle**, a savings circle where a public circuit decides who gets paid (`contracts/src/BylawCircle.sol`) | Tested end to end on a mock TapeOut. No owner or admin functions |
-| Tape-out and deploy on X Layer | Not done yet |
-| Vault contract, AI helper, privacy layer | Not started |
+| Tape-out and deploy on X Layer | Done: circuit #6, demo circle run end to end (docs/DEPLOYMENTS.md) |
+| Live circle dashboard (`web/circle.mjs`): wallet connect, approve, contribute, payout | Built; needs a browser wallet test |
+| Vault contract, AI helper, privacy layer | Not started (privacy is planned for later) |
 
 ## How it works
 

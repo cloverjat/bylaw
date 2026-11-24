@@ -12,10 +12,24 @@ label{display:block;margin:10px 0;font-size:14px}select,input{display:block;widt
 .sentence{font-size:20px;font-weight:600}
 .ok{color:#047857;font-weight:600}.bad{color:#b91c1c;font-weight:700}
 pre{background:#0E1B2C;color:#d1fae5;padding:12px;border-radius:8px;overflow:auto;font-size:12px;white-space:pre-wrap;word-break:break-all}
+button{background:var(--ink);color:#fff;border:0;border-radius:8px;padding:10px 14px;font:inherit;margin:4px 4px 4px 0;cursor:pointer}button:disabled{opacity:.4}
 small,.note{color:#52606d;font-size:13px}.err{color:#b91c1c}
 </style></head><body>
 <header><h1>Bylaw</h1><p>Rules your money can't break.</p></header>
 <main>
+<div class="card" id="circleCard">
+<h2 style="margin:0 0 4px">Live savings circle on X Layer</h2>
+<p class="note">Everyone pays in each round. A public circuit, locked on X Layer, decides who gets the pot. Nobody can change the rule, not even us.</p>
+<label>Circle address<input id="caddr" spellcheck="false"></label>
+<button id="load">Load circle</button> <button id="conn">Connect wallet</button> <span id="me" class="note"></span>
+<div id="cview" hidden>
+<p class="sentence" id="chead"></p>
+<ul id="clist" style="padding-left:18px"></ul>
+<p class="note" id="cfacts"></p>
+<p><button id="b_approve">1. Allow the circle to take my payments</button> <button id="b_contribute">2. Pay this round</button> <button id="b_payout">3. Pay out this round's winner</button></p>
+<p class="note">1 is a permission slip, no money moves. 2 pays your share. 3 can be pressed by anyone: the circuit decides if it is allowed. Your wallet asks you to approve each step; read it before you confirm.</p>
+<p id="cmsg"></p>
+</div></div>
 <div class="card"><label>Pick a rule<select id="tpl"></select></label><p class="note" id="blurb"></p><div id="params"></div><p class="err" id="error"></p></div>
 <div id="out" class="card" hidden>
 <small>What this rule says. Read it: the proof only checks the circuit against this rule.</small>
