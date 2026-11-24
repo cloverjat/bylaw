@@ -1,0 +1,178 @@
+.model bylaw_circle_payout
+.inputs i0 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16
+.outputs o0
+.names i0 i4 g0
+0- 1
+-0 1
+.names i0 g0 g1
+0- 1
+-0 1
+.names i4 g0 g2
+0- 1
+-0 1
+.names g1 g2 g3
+0- 1
+-0 1
+.names g3 g3 g4
+0- 1
+-0 1
+.names i1 i5 g5
+0- 1
+-0 1
+.names i1 g5 g6
+0- 1
+-0 1
+.names i5 g5 g7
+0- 1
+-0 1
+.names g6 g7 g8
+0- 1
+-0 1
+.names g8 g8 g9
+0- 1
+-0 1
+.names g4 g9 g10
+0- 1
+-0 1
+.names g10 g10 g11
+0- 1
+-0 1
+.names i2 i6 g12
+0- 1
+-0 1
+.names i2 g12 g13
+0- 1
+-0 1
+.names i6 g12 g14
+0- 1
+-0 1
+.names g13 g14 g15
+0- 1
+-0 1
+.names g15 g15 g16
+0- 1
+-0 1
+.names g11 g16 g17
+0- 1
+-0 1
+.names g17 g17 g18
+0- 1
+-0 1
+.names i3 i7 g19
+0- 1
+-0 1
+.names i3 g19 g20
+0- 1
+-0 1
+.names i7 g19 g21
+0- 1
+-0 1
+.names g20 g21 g22
+0- 1
+-0 1
+.names g22 g22 g23
+0- 1
+-0 1
+.names g18 g23 g24
+0- 1
+-0 1
+.names g24 g24 g25
+0- 1
+-0 1
+.names i8 i12 g26
+0- 1
+-0 1
+.names i8 g26 g27
+0- 1
+-0 1
+.names i12 g26 g28
+0- 1
+-0 1
+.names g27 g28 g29
+0- 1
+-0 1
+.names g29 g29 g30
+0- 1
+-0 1
+.names i9 i13 g31
+0- 1
+-0 1
+.names i9 g31 g32
+0- 1
+-0 1
+.names i13 g31 g33
+0- 1
+-0 1
+.names g32 g33 g34
+0- 1
+-0 1
+.names g34 g34 g35
+0- 1
+-0 1
+.names g30 g35 g36
+0- 1
+-0 1
+.names g36 g36 g37
+0- 1
+-0 1
+.names i10 i14 g38
+0- 1
+-0 1
+.names i10 g38 g39
+0- 1
+-0 1
+.names i14 g38 g40
+0- 1
+-0 1
+.names g39 g40 g41
+0- 1
+-0 1
+.names g41 g41 g42
+0- 1
+-0 1
+.names g37 g42 g43
+0- 1
+-0 1
+.names g43 g43 g44
+0- 1
+-0 1
+.names i11 i15 g45
+0- 1
+-0 1
+.names i11 g45 g46
+0- 1
+-0 1
+.names i15 g45 g47
+0- 1
+-0 1
+.names g46 g47 g48
+0- 1
+-0 1
+.names g48 g48 g49
+0- 1
+-0 1
+.names g44 g49 g50
+0- 1
+-0 1
+.names g50 g50 g51
+0- 1
+-0 1
+.names g25 g51 g52
+0- 1
+-0 1
+.names g52 g52 g53
+0- 1
+-0 1
+.names g53 i16 g54
+0- 1
+-0 1
+.names g54 g54 g55
+0- 1
+-0 1
+.names g55 g55 g56
+0- 1
+-0 1
+.names g56 g56 o0
+0- 1
+-0 1
+.end
