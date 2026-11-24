@@ -1,7 +1,7 @@
 # Bylaw: rules your money can't break
 
 ## The problem
-Money mistakes on-chain are final. Address-poisoning and phishing scams cost victims about $62M in two months of 2026 (ScamSniffer). Savings groups (ajo, esusu, chit funds) run on trust in one organizer. AI agents are about to spend on people's behalf, and nobody has a simple, checkable way to limit them.
+Money mistakes on-chain are final. Address-poisoning and phishing scams cost victims about $62M in two months of 2026 (ScamSniffer). Rotating savings groups (ROSCAs, found in every region of the world) run on trust in one organizer. AI agents are about to spend on people's behalf, and nobody has a simple, checkable way to limit them.
 
 ## The idea
 A money rule should be as readable as a sentence, provably correct, and impossible to change quietly. TapeOut circuits on X Layer are public, run for free to check, and cannot call other contracts, which makes them a good home for rules.
