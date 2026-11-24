@@ -9,7 +9,7 @@ import { Builder } from '../../compiler/src/netlist.mjs';
 const art = (n) => JSON.parse(fs.readFileSync(new URL(`../out/${n}.json`, import.meta.url)));
 const hex = (u8) => '0x' + Buffer.from(u8).toString('hex');
 
-async function setup() {
+async function setup(feeBps = 0n) {
   const server = ganache.provider({ logging: { quiet: true }, wallet: { totalAccounts: 6 }, chain: { hardfork: 'shanghai' } });
   const provider = new ethers.BrowserProvider(server);
   const s = await Promise.all([0, 1, 2, 3, 4, 5].map((i) => provider.getSigner(i)));
@@ -26,7 +26,7 @@ async function setup() {
   const members = [s[1], s[2], s[3]];
   const addrs = await Promise.all(members.map((m) => m.getAddress()));
   const period = 3600n;
-  const circle = await deploy('BylawCircle', s[0], await token.getAddress(), await tape.getAddress(), 1, addrs, 100n, period);
+  const circle = await deploy('BylawCircle', s[0], await token.getAddress(), await tape.getAddress(), 1, addrs, 100n, period, await s[4].getAddress(), feeBps);
   for (const m of members) {
     await (await token.mint(await m.getAddress(), 1000n)).wait();
     await (await token.connect(m).approve(await circle.getAddress(), 1000n)).wait();
@@ -81,6 +81,26 @@ test('rule is frozen: swapping the circuit in the processor blocks payouts', asy
   const out = evil.build([evil.not(evil.input(16))]);
   await (await tape.register(1, hex(out.bytes), 17, 1)).wait();
   await assert.rejects(circle.connect(s[5]).payout(2), /RuleChanged|revert/);
+});
+
+test('circle fee: taken from each payout, goes to the fixed recipient, cannot exceed 1%', async () => {
+  const { token, circle, members, s, warp, period } = await setup(100n); // 1%
+  assert.equal(await circle.feeBps(), 100n);
+  const feeAddr = await s[4].getAddress();
+  for (let r = 0; r < 3; r++) {
+    for (const m of members) await (await circle.connect(m).contribute()).wait();
+    await warp(Number(period) + 1);
+    await (await circle.connect(s[5]).payout(r)).wait();
+  }
+  // pot 300 per round, fee 3 per round, 9 total; each member nets -3 over the circle
+  assert.equal(await token.balanceOf(feeAddr), 9n);
+  for (const m of members) assert.equal(await token.balanceOf(await m.getAddress()), 1000n - 3n);
+  // over-cap fee is refused at creation
+  const a = art('BylawCircle');
+  const addrs = await Promise.all(members.map((m) => m.getAddress()));
+  await assert.rejects(
+    new ethers.ContractFactory(a.abi, a.bytecode, s[0]).deploy(await token.getAddress(), await circle.processor(), 1, addrs, 100n, 3600n, feeAddr, 101n),
+  );
 });
 
 test('no owner or admin functions exist', async () => {

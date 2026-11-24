@@ -22,6 +22,7 @@ contract BylawCircle {
     uint256 public constant GRACE = 7 days;
     uint256 public constant EVAL_GAS = 3_000_000;
     uint8 public constant MAX_MEMBERS = 15;
+    uint256 public constant MAX_FEE_BPS = 100; // fee can never exceed 1%
 
     IERC20Like public immutable token;
     ITapeOutProcessor public immutable processor;
@@ -30,6 +31,8 @@ contract BylawCircle {
     uint256 public immutable contribution;
     uint256 public immutable period;
     uint256 public immutable start;
+    address public immutable feeRecipient;
+    uint256 public immutable feeBps; // fixed at creation, cannot be changed
 
     address[] public members;
     uint8 public round;
@@ -40,6 +43,7 @@ contract BylawCircle {
 
     event Contributed(uint8 indexed round, address indexed member);
     event PaidOut(uint8 indexed round, address indexed recipient, uint256 amount);
+    event FeePaid(uint8 indexed round, address indexed feeRecipient, uint256 amount);
     event Failed(uint8 indexed round);
     event Refunded(uint8 indexed round, address indexed member, uint256 amount);
 
@@ -58,10 +62,13 @@ contract BylawCircle {
         uint256 circuitId_,
         address[] memory members_,
         uint256 contribution_,
-        uint256 period_
+        uint256 period_,
+        address feeRecipient_,
+        uint256 feeBps_
     ) {
         if (members_.length < 2 || members_.length > MAX_MEMBERS) revert BadParams();
         if (contribution_ == 0 || period_ < 60) revert BadParams();
+        if (feeBps_ > MAX_FEE_BPS || (feeBps_ > 0 && feeRecipient_ == address(0))) revert BadParams();
         for (uint256 i = 0; i < members_.length; i++) {
             address m = members_[i];
             if (m == address(0) || isMember[m]) revert BadParams();
@@ -75,6 +82,8 @@ contract BylawCircle {
         contribution = contribution_;
         period = period_;
         start = block.timestamp;
+        feeRecipient = feeRecipient_;
+        feeBps = feeBps_;
     }
 
     function memberCount() public view returns (uint8) {
@@ -125,8 +134,13 @@ contract BylawCircle {
         round = r + 1;
         paidCount = 0;
         uint256 pot = contribution * n;
-        require(token.transfer(to, pot), "transfer failed");
-        emit PaidOut(r, to, pot);
+        uint256 fee = (pot * feeBps) / 10_000;
+        if (fee > 0) {
+            require(token.transfer(feeRecipient, fee), "transfer failed");
+            emit FeePaid(r, feeRecipient, fee);
+        }
+        require(token.transfer(to, pot - fee), "transfer failed");
+        emit PaidOut(r, to, pot - fee);
     }
 
     /// @notice If someone has not paid a long time after the round ended, anyone can close the circle.
