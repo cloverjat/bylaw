@@ -27,4 +27,4 @@ Circle `0x0a9721d77a9e378e0d968a862a9dd85488392628`, built with solc 0.8.39 (the
 - Members A, B, C each approved and contributed 0.01 USDC (circle held 0.03 USDC).
 - A payout to the wrong member (index 1 in round 0) reverts with `RuleSaysNo` (`0x81a15a08`): the circuit refuses it.
 - `payout(0)` by the dev wallet: tx `0xc1b1fa02c570ca4c705ee33622d2049d94ba4c8f0f521432003083e74bfeabf1`. Member A received 0.0297 USDC, fee recipient received 0.0003 USDC (1%). Circle balance 0, round 1.
-- By design, once every member has paid, the circuit allows an early payout to the right member; the time window only matters when someone has not paid.
+- The circuit pays only when ALL of these hold: the recipient is the member whose turn it is, every member has paid this round, and the round's time is over. (Round 0's payout worked because its time had already passed. Everyone paid but time not over, or someone missing, gives `RuleSaysNo`.)

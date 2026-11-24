@@ -60,8 +60,11 @@ function nextStep() {
     if (allowance < s.contribution) return { label: 'Step 1: allow this circle to take your payment', act: 'approve', help: 'A permission slip. No money moves yet. Your wallet will ask you to confirm.' };
     return { label: 'Pay your share: ' + usdc(s.contribution) + ' USDC', act: 'contribute', help: 'Your wallet shows the exact amount before you confirm.' };
   }
-  if (everyonePaid || windowOver) return { label: 'Send the pot to ' + who(s.members[s.round], s.round), act: 'payout', help: 'Anyone can press this. The public rule checks it first, and refuses if it is the wrong person or too early.' };
-  return { label: 'Waiting for the others to pay', act: null, help: idx < 0 ? 'This wallet is not a member of this circle.' : 'You have paid. The pot can be sent once everyone has paid or the waiting time is over.' };
+  const left = Math.max(0, Math.ceil((s.roundEnd - s.now) / 60));
+  if (everyonePaid && windowOver) return { label: 'Send the pot to ' + who(s.members[s.round], s.round), act: 'payout', help: 'Anyone can press this. The public rule checks it first and refuses a wrong person.' };
+  if (everyonePaid) return { label: 'Everyone has paid. The pot unlocks in about ' + left + ' min', act: null, help: 'The rule only releases the pot when everyone has paid and the round time is over.' };
+  const missing = s.paid.filter((p) => !p).length;
+  return { label: 'Waiting for ' + missing + ' more to pay', act: null, help: idx < 0 ? 'This wallet is not a member of this circle.' : idx >= 0 && s.paid[idx] ? 'You have paid. The pot is released only when everyone has paid and the round time is over.' : '' };
 }
 
 async function refresh() {
@@ -83,7 +86,7 @@ async function refresh() {
   }).join('');
   const left = s.roundEnd - s.now;
   $('cfacts').innerHTML = `Each member pays ${usdc(s.contribution)} USDC a round. A ${s.feeBps / 100}% circle fee is taken from each pot automatically. Held in the circle now: ${usdc(s.balance)} USDC. ` +
-    (done || s.failed ? '' : left > 0 ? `If someone is missing, the waiting time ends in about ${Math.ceil(left / 60)} min.` : 'The waiting time is over.') +
+    (done || s.failed ? '' : left > 0 ? `This round's time ends in about ${Math.ceil(left / 60)} min.` : 'This round\'s time is over.') +
     ` <a href="${EXPLORER}/address/${c}" target="_blank" rel="noopener">View on the blockchain explorer</a>`;
   $('ckv').innerHTML = `<b>Circle</b><span>${c}</span><b>Token</b><span>${s.token}</span><b>Circuit</b><span>#${s.circuitId} on ${s.processor}</span><b>Netlist hash</b><span>${s.netlistHash}</span><b>Fee</b><span>${s.feeBps} bps to ${s.feeRecipient}</span><b>Round</b><span>${s.round} (paidCount ${s.paidCount})</span>`;
   const n = nextStep();
