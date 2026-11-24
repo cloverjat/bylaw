@@ -128,8 +128,8 @@ refresh();
 const rows = [];
 function addRow(n = '', wl = '') {
   const d = document.createElement('div');
-  d.style.cssText = 'display:flex;gap:8px;margin:6px 0';
-  d.innerHTML = '<input placeholder="Name" style="flex:1"><input placeholder="Wallet address (0x...)" style="flex:2">';
+  d.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;margin:6px 0';
+  d.innerHTML = '<input placeholder="Name" style="flex:1 1 110px"><input placeholder="Wallet address (0x...)" style="flex:3 1 240px">';
   d.children[0].value = n; d.children[1].value = wl;
   $('cn_rows').appendChild(d); rows.push(d);
 }
