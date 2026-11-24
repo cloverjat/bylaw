@@ -7,9 +7,9 @@ const opt = (name, def) => { const i = argv.indexOf(`--${name}`); return i >= 0 
 const members = argv.filter((a, i) => /^0x/i.test(a) && argv[i - 1]?.startsWith('--') === false || (/^0x/i.test(a) && !argv[i - 1]?.startsWith('--')));
 const feeTo = opt('fee-to', '0x11BccB28A40ee64EA0eebC3199b9B00D5359e7de');
 const feeBps = opt('fee-bps', '100');
-const contribution = opt('contribution', '10000'); // 0.01 USDT0 (6 decimals)
+const contribution = opt('contribution', '10000'); // 0.01 USDC (6 decimals)
 const period = opt('period', '300'); // seconds
-const TOKEN = '0x779Ded0c9e1022225f8E0630b35a9b54bE713736'; // USDT0 on X Layer
+const TOKEN = opt('token', '0xB6CEceAB302E2E4948951eE7843FC24E92933061'); // native USDC (Circle) on X Layer, 6 decimals
 const PROCESSOR = '0x526b96238cc418d909005e2e2d79e327da4bd0f7'; // My 4004 #29
 const CIRCUIT_ID = '6';
 
@@ -24,7 +24,7 @@ console.log('token_        :', cs(TOKEN));
 console.log('processor_    :', cs(PROCESSOR));
 console.log('circuitId_    :', CIRCUIT_ID);
 console.log('members_      :', JSON.stringify(members.map(cs)));
-console.log('contribution_ :', contribution, `(= ${Number(contribution) / 1e6} USDT0)`);
+console.log('contribution_ :', contribution, `(= ${Number(contribution) / 1e6} USDC)`);
 console.log('period_       :', period, `seconds`);
 console.log('feeRecipient_ :', cs(feeTo));
 console.log('feeBps_       :', feeBps, `(= ${Number(feeBps) / 100}%)`);
