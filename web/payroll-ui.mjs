@@ -42,6 +42,7 @@ $('py_go').addEventListener('click', async () => {
     const link = location.origin + location.pathname + '?payroll=' + r.contractAddress + '&names=' + encodeURIComponent(f.names.join(',')) + '#payCard';
     say('py_msg', 'Payroll created. Open this link to fund it (step 2) and share it with your team: ' + link, 'ok');
     history.replaceState(null, '', link); NAMES.splice(0, NAMES.length, ...f.names); await load();
+setInterval(() => { if (!document.hidden) load(); }, 15000);
   } catch (e) { say('py_msg', e.message || String(e), 'bad'); }
 });
 
@@ -82,7 +83,7 @@ async function load() {
 $('pv_cta').addEventListener('click', async () => {
   const act = $('pv_cta').dataset.act, c = qs.get('payroll').toLowerCase();
   try {
-    if (act === 'connect') { me = await connect(); await load(); return; }
+    if (act === 'connect' || !me) { me = await connect(); await load(); if (act === 'connect') return; }
     say('pv_msg', 'Check your wallet and read the popup before you confirm...');
     let h;
     if (act === 'pay') { const np = nextPay(); h = await payrollActions.pay(me, c, np.i, np.k); }
@@ -90,7 +91,9 @@ $('pv_cta').addEventListener('click', async () => {
     say('pv_msg', 'Sent. Waiting for confirmation...');
     const ok = await waitFor(h);
     await load();
+setInterval(() => { if (!document.hidden) load(); }, 15000);
     say('pv_msg', ok ? 'Done. Confirmed.' : 'The transaction did not confirm.', ok ? 'ok' : 'bad');
   } catch (e) { say('pv_msg', e.message || String(e), 'bad'); }
 });
 load();
+setInterval(() => { if (!document.hidden) load(); }, 15000);
