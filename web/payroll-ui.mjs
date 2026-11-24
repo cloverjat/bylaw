@@ -1,7 +1,7 @@
 import { connect, short, usdc, waitFor, waitReceipt, deployCircle, EXPLORER } from './circle.mjs';
 import { validatePayroll, payrollTotals, payrollDeployData, readPayroll, payrollActions, payrollAllowance, RECLAIM_DELAY } from './payroll.mjs';
 const $ = (id) => document.getElementById(id);
-const qs = new URLSearchParams(location.search);
+const qs = { get: (k) => new URLSearchParams(location.search).get(k) };
 const NAMES = (qs.get('names') || '').split(',').map((x) => x.trim());
 let me = null, S = null;
 const unit = () => { const u = $('py_unit').selectedOptions[0].textContent; return Number($('py_per').value) === 1 ? u.replace(/s$/, '') : u; };
