@@ -117,6 +117,7 @@ async function refresh() {
 }
 async function act(name) {
   try {
+    if (name === 'connect' && !wallet()) { const u = 'https://www.okx.com/download?deeplink=' + encodeURIComponent('okx://wallet/dapp/url?dappUrl=' + encodeURIComponent(location.href)); $('cmsg').innerHTML = 'This browser has no wallet. <a href="' + u + '">Tap here to open this page inside the OKX app</a>, then press Connect again. You can still look at any circle without connecting.'; $('cmsg').className = 'err'; return; }
     if (name === 'connect') { me = await connect(); $('me').textContent = ' Connected: ' + short(me); await refresh(); return; }
     const c = $('caddr').value.trim().toLowerCase();
     say('Check your wallet and read the popup before you confirm...');

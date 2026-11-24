@@ -2,7 +2,7 @@
 const RPC = 'https://rpc.xlayer.tech';
 const CHAIN_HEX = '0xc4';
 const EXPLORER = 'https://www.okx.com/web3/explorer/xlayer';
-export const DEMO_CIRCLE = '0x0a9721d77a9e378e0d968a862a9dd85488392628';
+export const DEMO_CIRCLE = '0x8d15e0ec20b56ccac0afe59fab188d0b72d2a3f5';
 const SEL = {
   token: '0xfc0c546a', processor: '0xce1b1d43', circuitId: '0x030c9d5c', netlistHash: '0x543862ee',
   contribution: '0x50520b1f', period: '0xef78d4fd', feeBps: '0x24a9d853', feeRecipient: '0x46904840',
