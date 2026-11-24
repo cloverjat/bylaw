@@ -70,10 +70,10 @@ export async function connect() {
   return account.toLowerCase();
 }
 
-async function send(from, to, data) {
+async function send(from, to, data, errs = ERRORS) {
   // Simulate first so the person sees a plain-English reason instead of a confusing wallet error.
   try { await rpc('eth_call', [{ from, to, data }, 'latest']); }
-  catch (e) { throw new Error(ERRORS[e.data] || 'The network says this would fail: ' + e.message); }
+  catch (e) { throw new Error(errs[e.data] || 'The network says this would fail: ' + e.message); }
   return wallet().request({ method: 'eth_sendTransaction', params: [{ from, to, data, value: '0x0' }] });
 }
 
@@ -90,7 +90,7 @@ export async function waitFor(hash) {
   for (let i = 0; i < 60; i++) { const r = await rpc('eth_getTransactionReceipt', [hash]); if (r) return r.status === '0x1'; await new Promise((r) => setTimeout(r, 2000)); }
   return null;
 }
-export { short, usdc, EXPLORER };
+export { short, usdc, EXPLORER, rpc, call, send, pad, num, addr, ERRORS };
 
 // Deploy a new circle from the creator's own wallet (no `to` address = contract creation).
 export async function deployCircle(from, data) {

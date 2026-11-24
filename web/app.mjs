@@ -133,6 +133,7 @@ $('conn').addEventListener('click', () => act('connect'));
 $('cta').addEventListener('click', () => act($('cta').dataset.act));
 for (const b of ['approve', 'contribute', 'payout']) $('b_' + b).addEventListener('click', () => act(b));
 refresh();
+import './payroll-ui.mjs';
 
 // ---- Create a circle ----
 const rows = [];

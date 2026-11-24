@@ -84,6 +84,30 @@ footer{padding:20px 0 40px}
 <p class="note">A 1% fee is taken from each pot to run Bylaw. Creating the circle costs a small amount of OKB for network gas. This cannot be undone or edited later.</p>
 <button class="cta" id="cn_go">Create circle (your wallet will ask you to confirm)</button>
 <p id="cn_msg"></p></div></div>
+<h2>Pay your team (Payroll)</h2>
+<div class="card" id="payCard" hidden>
+<b id="pv_title">Your payroll</b>
+<div class="bar"><i id="pv_bar"></i></div>
+<small id="pv_prog"></small>
+<ul class="members" id="pv_list"></ul>
+<button class="cta" id="pv_cta" disabled>Connect your wallet</button>
+<p class="note" id="pv_help"></p>
+<p id="pv_msg"></p>
+<p class="note" id="pv_facts"></p>
+</div>
+<div class="card" id="payCreate">
+<p class="note">Set it once, then it is locked. Choose your workers, what each is paid per cycle, how often, and for how many cycles. You put in the full amount one time. Each worker's pay is released at the end of each cycle by a public rule. Nobody can change it, not even you. Anything the workers never claim can come back to you only 90 days after the last cycle.</p>
+<div id="py_rows"></div>
+<p><button class="ghost" id="py_add">+ Add a worker</button></p>
+<label>How long is each pay cycle?<span style="display:flex;gap:8px"><input id="py_per" type="number" min="1" value="7" style="flex:1"><select id="py_unit" style="flex:1"><option value="60">minutes</option><option value="3600">hours</option><option value="86400" selected>days</option></select></span></label>
+<label>How many cycles? (1 to 15)<input id="py_cyc" type="number" min="1" max="15" value="4"></label>
+<p class="bad" id="py_err"></p>
+<button class="cta" id="py_review">Review my payroll</button>
+<div id="py_sum" hidden>
+<p class="sentence" id="py_text"></p>
+<p class="note">A 1% fee on the total pays for running Bylaw. Creating costs a little OKB for gas. After creating, you fund it in a second step. Terms can never be edited.</p>
+<button class="cta" id="py_go">Create payroll (your wallet will ask you to confirm)</button>
+<p id="py_msg"></p></div></div>
 <h2>Rule lab</h2>
 <div class="card">
 <p class="note">Pick a rule to see what it does. Every rule is checked against all possible cases before it is locked.</p><label>Choose a rule<select id="tpl"></select></label><p id="blurb" style="font-size:15px;line-height:1.7"></p><div id="params"></div><p class="bad" id="error"></p>
