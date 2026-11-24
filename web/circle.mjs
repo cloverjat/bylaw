@@ -8,7 +8,7 @@ const SEL = {
   contribution: '0x50520b1f', period: '0xef78d4fd', feeBps: '0x24a9d853', feeRecipient: '0x46904840',
   memberCount: '0x11aee380', round: '0x146ca531', paidCount: '0x248b8725', roundEnd: '0xc02e580e',
   failed: '0xba414fa6', members: '0x5daf08ca', paid: '0xa2ebc085', balanceOf: '0x70a08231',
-  allowance: '0xdd62ed3e', approve: '0x095ea7b3', contribute: '0xd7bb99ba', payout: '0x153f2b4b',
+  allowance: '0xdd62ed3e', declareFailed: '0xf4a6d373', claimRefund: '0xb5545a3c', approve: '0x095ea7b3', contribute: '0xd7bb99ba', payout: '0x153f2b4b',
 };
 const ERRORS = {
   '0x291fc442': 'This wallet is not a member of the circle.',
@@ -54,7 +54,7 @@ export async function readCircle(c) {
   };
 }
 
-function wallet() { return window.okxwallet || window.ethereum; }
+export function wallet() { return window.okxwallet || window.ethereum; }
 
 export async function connect() {
   const w = wallet();
@@ -80,6 +80,8 @@ async function send(from, to, data) {
 export const actions = {
   approve: (from, c, s) => send(from, s.token, SEL.approve + pad(c) + pad((s.contribution * s.count).toString(16))),
   contribute: (from, c) => send(from, c, SEL.contribute),
+  declareFailed: (from, c) => send(from, c, SEL.declareFailed),
+  claimRefund: (from, c) => send(from, c, SEL.claimRefund),
   payout: (from, c, s) => send(from, c, SEL.payout + pad(s.round.toString(16))),
 };
 

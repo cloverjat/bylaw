@@ -47,20 +47,27 @@ renderParams($('tpl').value);
 run();
 
 // ---- Live circle dashboard ----
-import { DEMO_CIRCLE, readCircle, connect, actions, waitFor, allowanceOf, short, usdc, EXPLORER, deployCircle, waitReceipt } from './circle.mjs';
+import { DEMO_CIRCLE, wallet, readCircle, connect, actions, waitFor, allowanceOf, short, usdc, EXPLORER, deployCircle, waitReceipt } from './circle.mjs';
 import { validate, deployData } from './create.mjs';
 let me = null, state = null, allowance = 0;
 const setMode = (dev) => { document.body.classList.toggle('dev', dev); $('m_dev').classList.toggle('on', dev); $('m_simple').classList.toggle('on', !dev); };
 $('m_simple').addEventListener('click', () => setMode(false));
 $('m_dev').addEventListener('click', () => setMode(true));
+if (!wallet()) { $('nowallet').hidden = false; $('okxopen').href = 'https://www.okx.com/download?deeplink=' + encodeURIComponent('okx://wallet/dapp/url?dappUrl=' + encodeURIComponent(location.href)); }
 $('caddr').value = new URLSearchParams(location.search).get('circle') || DEMO_CIRCLE;
 const say = (m, cls = '') => { $('cmsg').textContent = m; $('cmsg').className = cls; };
 const NAMES = (new URLSearchParams(location.search).get('names') || '').split(',').map((x) => x.trim());
 const who = (m, i) => { const nm = NAMES[i] || 'Member ' + (i + 1); return (me === m ? 'You, ' + nm : nm) + ' (' + short(m) + ')'; };
 
+const GRACE = 7 * 86400;
 function nextStep() {
   const s = state;
-  if (s.failed || s.round >= s.count) return null;
+  if (s.failed) {
+    const i = me ? s.members.indexOf(me) : -1;
+    if (i >= 0 && s.paid[i]) return { label: 'Take my money back: ' + usdc(s.contribution) + ' USDC', act: 'claimRefund', help: 'This circle was closed because someone did not pay. Everyone who paid this round gets their payment back.' };
+    return null;
+  }
+  if (s.round >= s.count) return null;
   const idx = me ? s.members.indexOf(me) : -1;
   const everyonePaid = s.paid.every(Boolean);
   const windowOver = s.now >= s.roundEnd;
@@ -73,7 +80,8 @@ function nextStep() {
   if (everyonePaid && windowOver) return { label: 'Send the pot to ' + who(s.members[s.round], s.round), act: 'payout', help: 'Anyone can press this. The public rule checks it first and refuses a wrong person.' };
   if (everyonePaid) return { label: 'Everyone has paid. The pot unlocks in about ' + left + ' min', act: null, help: 'The rule only releases the pot when everyone has paid and the round time is over.' };
   const missing = s.paid.filter((p) => !p).length;
-  return { label: 'Waiting for ' + missing + ' more to pay', act: null, help: idx < 0 ? 'This wallet is not a member of this circle.' : idx >= 0 && s.paid[idx] ? 'You have paid. The pot is released only when everyone has paid and the round time is over.' : '' };
+  if (s.now >= s.roundEnd + GRACE) return { label: 'Someone never paid: close this circle and refund everyone', act: 'declareFailed', help: 'The 7-day grace period is over. Anyone can close the circle, and then everyone who paid can take their money back.' };
+  return { label: 'Waiting for ' + missing + ' more to pay', act: null, help: idx < 0 ? 'This wallet is not a member of this circle.' : idx >= 0 && s.paid[idx] ? 'You have paid. The pot is released only when everyone has paid and the round time is over. If someone has not paid 7 days after the round ends, the circle can be closed and everyone refunded.' : '' };
 }
 
 async function refresh() {
@@ -104,6 +112,7 @@ async function refresh() {
   $('cta').dataset.act = n && n.act || '';
   $('chelp').textContent = n ? n.help : '';
   for (const b of ['approve', 'contribute', 'payout']) $('b_' + b).disabled = !me || done || s.failed;
+  $('cta').dataset.act = n && n.act || '';
   say('');
 }
 async function act(name) {
