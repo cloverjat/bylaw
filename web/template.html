@@ -90,7 +90,8 @@ footer{padding:20px 0 40px}
 <div id="cn_sum" hidden>
 <p class="sentence" id="cn_text"></p>
 <p class="note">A 1% fee is taken from each pot to run Bylaw. Creating the circle costs a small amount of OKB for network gas. This cannot be undone or edited later.</p>
-<button class="cta" id="cn_go">Create circle (your wallet will ask you to confirm)</button>
+<label class="ack" style="display:flex;gap:10px;align-items:flex-start;margin:14px 0;padding:12px;border:2px solid #e0a43a;border-radius:12px;background:#fff8ea;font-size:15px;line-height:1.5"><input type="checkbox" id="cn_ack" style="width:22px;height:22px;flex:none;margin-top:2px"><span><b>This cannot be edited or undone.</b> I checked every wallet address and amount. A wrong address cannot be fixed after this circle is created.</span></label>
+<button class="cta" id="cn_go" disabled>Create circle (your wallet will ask you to confirm)</button>
 <p id="cn_msg"></p></div></div>
 <h2>Pay your team (Payroll)</h2>
 <div class="card" id="payCard" hidden>
@@ -115,7 +116,8 @@ footer{padding:20px 0 40px}
 <div id="py_sum" hidden>
 <p class="sentence" id="py_text"></p>
 <p class="note">A 1% fee on the total pays for running Bylaw. Creating costs a little OKB for gas. After creating, you fund it in a second step. Terms can never be edited.</p>
-<button class="cta" id="py_go">Create payroll (your wallet will ask you to confirm)</button>
+<label class="ack" style="display:flex;gap:10px;align-items:flex-start;margin:14px 0;padding:12px;border:2px solid #e0a43a;border-radius:12px;background:#fff8ea;font-size:15px;line-height:1.5"><input type="checkbox" id="py_ack" style="width:22px;height:22px;flex:none;margin-top:2px"><span><b>This cannot be edited or undone.</b> I checked every wallet address and amount. A wrong address cannot be fixed after this payroll is created.</span></label>
+<button class="cta" id="py_go" disabled>Create payroll (your wallet will ask you to confirm)</button>
 <p id="py_msg"></p></div></div>
 <h2>Rule lab</h2>
 <div class="card">

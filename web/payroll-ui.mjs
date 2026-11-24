@@ -100,3 +100,6 @@ setInterval(() => { if (!document.hidden) load(); }, 15000);
 });
 load();
 setInterval(() => { if (!document.hidden) load(); }, 15000);
+
+$('py_ack').addEventListener('change', () => { $('py_go').disabled = !$('py_ack').checked; });
+$('py_review').addEventListener('click', () => { $('py_ack').checked = false; $('py_go').disabled = true; });

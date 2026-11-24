@@ -186,3 +186,6 @@ $('cn_go').addEventListener('click', async () => {
 
 renderFinder($('fd_list'), $('fd_empty'), $('fd_in'), $('fd_go'), $('fd_err'));
 { const p = new URLSearchParams(location.search); if (p.get('circle')) remember({ kind: 'circle', addr: p.get('circle'), name: p.get('name') || 'Savings circle', names: p.get('names') || '' }); }
+
+$('cn_ack').addEventListener('change', () => { $('cn_go').disabled = !$('cn_ack').checked; });
+$('cn_review').addEventListener('click', () => { $('cn_ack').checked = false; $('cn_go').disabled = true; });
