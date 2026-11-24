@@ -89,3 +89,16 @@ export async function waitFor(hash) {
   return null;
 }
 export { short, usdc, EXPLORER };
+
+// Deploy a new circle from the creator's own wallet (no `to` address = contract creation).
+export async function deployCircle(from, data) {
+  let gas;
+  try { gas = await rpc('eth_estimateGas', [{ from, data }]); }
+  catch (e) { throw new Error('The network says this circle cannot be created: ' + e.message); }
+  const g = '0x' + Math.ceil(num(gas) * 1.2).toString(16);
+  return wallet().request({ method: 'eth_sendTransaction', params: [{ from, data, gas: g, value: '0x0' }] });
+}
+export async function waitReceipt(hash) {
+  for (let i = 0; i < 90; i++) { const r = await rpc('eth_getTransactionReceipt', [hash]); if (r) return r; await new Promise((r) => setTimeout(r, 2000)); }
+  return null;
+}

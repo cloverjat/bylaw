@@ -4,9 +4,16 @@ import { certify, describe } from '../compiler/src/certificate.mjs';
 const $ = (id) => document.getElementById(id);
 const hex = (u8) => Array.from(u8, (b) => b.toString(16).padStart(2, '0')).join('');
 
+const INFO = {
+  circle: { what: 'Friends each pay the same amount every round. The whole pot goes to one member per round, in turn, straight to their wallet.', ex: '5 friends pay 10 USDC a month. In month 1, friend 1 gets 50 USDC. In month 2, friend 2 gets it, and so on.', who: 'Savings groups, friends, family, communities (ajo, esusu, chama).', status: 'live', note: 'Live on X Layer. Try it above.' },
+  dailyCap: { what: 'A wallet cannot spend more than a set amount per day. A payment that would go over the cap is refused.', ex: 'A team wallet with a 50 USDC daily cap. If someone steals the key, they can only take 50 a day.', who: 'Teams and businesses that share a wallet.', status: 'soon', note: 'The rule is proven. The wallet contract that enforces it is coming.' },
+  trustedOrSmall: { what: 'Paying a saved, trusted address is always fine. A brand-new address can only get small amounts, and only after a waiting time.', ex: 'Pay your supplier freely. A new address can get at most 5 USDC, and only after 24 hours.', who: 'Anyone worried about typing the wrong address or being scammed.', status: 'soon', note: 'The rule is proven. The wallet contract that enforces it is coming.' },
+  confirmAbove: { what: 'Small payments go through. Anything above your limit needs a second confirmation first.', ex: 'Staff can pay up to 20 USDC. Above that, the owner must also confirm.', who: 'Businesses that want a second pair of eyes on big payments.', status: 'soon', note: 'The rule is proven. The wallet contract that enforces it is coming.' },
+};
 function renderParams(key) {
   const t = TEMPLATES[key];
-  $('blurb').textContent = t.blurb;
+  const i = INFO[key];
+  $('blurb').innerHTML = `<b>What it does:</b> ${i.what}<br><b>Example:</b> ${i.ex}<br><b>Who it's for:</b> ${i.who}<br><span class="pill ${i.status === 'live' ? 'g' : 'y'}">${i.status === 'live' ? 'Live' : 'Coming soon'}</span> ${i.note}`;
   $('params').innerHTML = t.params.map((p) => `<label>${p.label}<input type="number" id="p_${p.name}" min="${p.min}" max="${p.max}" value="${p.def}"></label>`).join('');
   t.params.forEach((p) => $('p_' + p.name).addEventListener('input', run));
 }
@@ -40,14 +47,16 @@ renderParams($('tpl').value);
 run();
 
 // ---- Live circle dashboard ----
-import { DEMO_CIRCLE, readCircle, connect, actions, waitFor, allowanceOf, short, usdc, EXPLORER } from './circle.mjs';
+import { DEMO_CIRCLE, readCircle, connect, actions, waitFor, allowanceOf, short, usdc, EXPLORER, deployCircle, waitReceipt } from './circle.mjs';
+import { validate, deployData } from './create.mjs';
 let me = null, state = null, allowance = 0;
 const setMode = (dev) => { document.body.classList.toggle('dev', dev); $('m_dev').classList.toggle('on', dev); $('m_simple').classList.toggle('on', !dev); };
 $('m_simple').addEventListener('click', () => setMode(false));
 $('m_dev').addEventListener('click', () => setMode(true));
 $('caddr').value = new URLSearchParams(location.search).get('circle') || DEMO_CIRCLE;
 const say = (m, cls = '') => { $('cmsg').textContent = m; $('cmsg').className = cls; };
-const who = (m, i) => (me === m ? 'You' : 'Member ' + (i + 1)) + ' (' + short(m) + ')';
+const NAMES = (new URLSearchParams(location.search).get('names') || '').split(',').map((x) => x.trim());
+const who = (m, i) => { const nm = NAMES[i] || 'Member ' + (i + 1); return (me === m ? 'You, ' + nm : nm) + ' (' + short(m) + ')'; };
 
 function nextStep() {
   const s = state;
@@ -114,3 +123,47 @@ $('conn').addEventListener('click', () => act('connect'));
 $('cta').addEventListener('click', () => act($('cta').dataset.act));
 for (const b of ['approve', 'contribute', 'payout']) $('b_' + b).addEventListener('click', () => act(b));
 refresh();
+
+// ---- Create a circle ----
+const rows = [];
+function addRow(n = '', wl = '') {
+  const d = document.createElement('div');
+  d.style.cssText = 'display:flex;gap:8px;margin:6px 0';
+  d.innerHTML = '<input placeholder="Name" style="flex:1"><input placeholder="Wallet address (0x...)" style="flex:2">';
+  d.children[0].value = n; d.children[1].value = wl;
+  $('cn_rows').appendChild(d); rows.push(d);
+}
+addRow(); addRow(); addRow();
+$('cn_add').addEventListener('click', () => addRow());
+function readForm() {
+  return { names: rows.map((r) => r.children[0].value.trim()), wallets: rows.map((r) => r.children[1].value.trim()), usdc: Number($('cn_amt').value), periodSeconds: Math.round(Number($('cn_per').value) * Number($('cn_unit').value)) };
+}
+const unitName = () => $('cn_unit').selectedOptions[0].textContent;
+$('cn_review').addEventListener('click', () => {
+  const f = readForm();
+  const err = validate(f);
+  $('cn_err').textContent = err || '';
+  $('cn_sum').hidden = !!err;
+  if (err) return;
+  const pot = f.usdc * f.names.length;
+  $('cn_text').textContent = `${f.names.join(', ')} each pay ${f.usdc} USDC every ${$('cn_per').value} ${unitName()}. Each round the whole pot (${pot} USDC, minus a 1% fee) goes to one member, in this order: ${f.names.join(', ')}. The pot is released only when everyone has paid and the round time is over.`;
+});
+$('cn_go').addEventListener('click', async () => {
+  const f = readForm();
+  const err = validate(f);
+  if (err) { $('cn_err').textContent = err; return; }
+  const out = (m, c = '') => { $('cn_msg').textContent = m; $('cn_msg').className = c; };
+  try {
+    if (!me) { me = await connect(); $('me').textContent = ' Connected: ' + short(me); }
+    out('Check your wallet and read the popup before you confirm...');
+    const h = await deployCircle(me, deployData(f));
+    out('Sent. Waiting for the network...');
+    const r = await waitReceipt(h);
+    if (!r || r.status !== '0x1' || !r.contractAddress) { out('The circle was not created.', 'bad'); return; }
+    const link = location.origin + location.pathname + '?circle=' + r.contractAddress + '&names=' + encodeURIComponent(f.names.join(','));
+    out('Your circle is live! Share this link with your members: ' + link, 'ok');
+    $('caddr').value = r.contractAddress;
+    NAMES.splice(0, NAMES.length, ...f.names);
+    await refresh();
+  } catch (e) { out(e.message || String(e), 'bad'); }
+});

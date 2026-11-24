@@ -68,9 +68,24 @@ footer{padding:20px 0 40px}
 <div><small>Circle address</small><input id="caddr" spellcheck="false"><button class="ghost" id="load" style="margin-top:6px">Load circle</button></div></div>
 </div></div>
 
+<h2>Create your own circle</h2>
+<div class="card" id="createCard">
+<p class="note">Set it up once, in plain words. After you create it, nobody can change it, not even you.</p>
+<label>Circle name<input id="cn_name" placeholder="e.g. Family savings"></label>
+<div id="cn_rows"></div>
+<p><button class="ghost" id="cn_add">+ Add a member</button></p>
+<label>How much does each person pay per round? (USDC)<input id="cn_amt" type="number" min="0" step="0.01" value="10"></label>
+<label>How long is each round?<span style="display:flex;gap:8px"><input id="cn_per" type="number" min="1" value="7" style="flex:1"><select id="cn_unit" style="flex:1"><option value="60">minutes</option><option value="3600">hours</option><option value="86400" selected>days</option></select></span></label>
+<p class="bad" id="cn_err"></p>
+<button class="cta" id="cn_review">Review my circle</button>
+<div id="cn_sum" hidden>
+<p class="sentence" id="cn_text"></p>
+<p class="note">A 1% fee is taken from each pot to run Bylaw. Creating the circle costs a small amount of OKB for network gas. This cannot be undone or edited later.</p>
+<button class="cta" id="cn_go">Create circle (your wallet will ask you to confirm)</button>
+<p id="cn_msg"></p></div></div>
 <h2>Rule lab</h2>
 <div class="card">
-<label>Choose a rule<select id="tpl"></select></label><p class="note" id="blurb"></p><div id="params"></div><p class="bad" id="error"></p>
+<p class="note">Pick a rule to see what it does. Every rule is checked against all possible cases before it is locked.</p><label>Choose a rule<select id="tpl"></select></label><p id="blurb" style="font-size:15px;line-height:1.7"></p><div id="params"></div><p class="bad" id="error"></p>
 <div id="out" hidden>
 <p class="sentence" id="sentence"></p>
 <p id="status"></p>
