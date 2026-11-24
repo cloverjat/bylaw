@@ -10,7 +10,7 @@ Everything on-chain is signed by the wallet owner on their phone (OKX Wallet). N
 
 ## Deploy with Remix (https://remix.ethereum.org)
 1. New file `BylawCircle.sol`, paste `contracts/src/BylawCircle.sol`.
-2. Compiler 0.8.26, optimizer on (200 runs), EVM version `paris`. Compile.
+2. Compiler 0.8.39 (what the deployed demo circle was built with), optimizer on (200 runs), EVM version `paris`. Compile.
 3. Deploy tab, environment "WalletConnect", scan the QR with OKX Wallet, pick the dev wallet, network X Layer (196).
 4. Constructor values: run `node contracts/scripts/args.mjs <A> <B> <C>` and paste the printed values.
 5. Approve the deploy on the phone. Save the contract address.

@@ -19,3 +19,12 @@ Confirms bit order (pin 0 = LSB, little-endian input bytes) and output conventio
 - Contribution 0.01 USDC, period 300 s, fee 1% (100 bps), 3 members:
   `0xD60d48db2141dAA6B6DB72dB39EB8f4f449aa3cE`, `0xaf37E03E90Eb379AA70BeF9Fd529C02D483Ff5dc`, `0x9a079fC2B572f4e596B298e3f67285475DbE067a`
 - All constructor values read back from the chain and match.
+
+## Demo circle run (X Layer mainnet, 2026-11-24)
+
+Circle `0x0a9721d77a9e378e0d968a862a9dd85488392628`, built with solc 0.8.39 (the code's metadata hash matches a fresh build of this repo).
+
+- Members A, B, C each approved and contributed 0.01 USDC (circle held 0.03 USDC).
+- A payout to the wrong member (index 1 in round 0) reverts with `RuleSaysNo` (`0x81a15a08`): the circuit refuses it.
+- `payout(0)` by the dev wallet: tx `0xc1b1fa02c570ca4c705ee33622d2049d94ba4c8f0f521432003083e74bfeabf1`. Member A received 0.0297 USDC, fee recipient received 0.0003 USDC (1%). Circle balance 0, round 1.
+- By design, once every member has paid, the circuit allows an early payout to the right member; the time window only matters when someone has not paid.
