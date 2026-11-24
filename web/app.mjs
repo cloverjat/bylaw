@@ -138,14 +138,14 @@ $('cn_add').addEventListener('click', () => addRow());
 function readForm() {
   return { names: rows.map((r) => r.children[0].value.trim()), wallets: rows.map((r) => r.children[1].value.trim()), usdc: Number($('cn_amt').value), periodSeconds: Math.round(Number($('cn_per').value) * Number($('cn_unit').value)) };
 }
-const unitName = () => $('cn_unit').selectedOptions[0].textContent;
+const unitName = () => { const u = $('cn_unit').selectedOptions[0].textContent; return Number($('cn_per').value) === 1 ? u.replace(/s$/, '') : u; };
 $('cn_review').addEventListener('click', () => {
   const f = readForm();
   const err = validate(f);
   $('cn_err').textContent = err || '';
   $('cn_sum').hidden = !!err;
   if (err) return;
-  const pot = f.usdc * f.names.length;
+  const pot = Math.round(f.usdc * 1e6 * f.names.length) / 1e6;
   $('cn_text').textContent = `${f.names.join(', ')} each pay ${f.usdc} USDC every ${$('cn_per').value} ${unitName()}. Each round the whole pot (${pot} USDC, minus a 1% fee) goes to one member, in this order: ${f.names.join(', ')}. The pot is released only when everyone has paid and the round time is over.`;
 });
 $('cn_go').addEventListener('click', async () => {
