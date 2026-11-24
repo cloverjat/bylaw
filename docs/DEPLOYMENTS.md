@@ -36,3 +36,10 @@ Circle `0x8d15e0ec20b56ccac0afe59fab188d0b72d2a3f5`, created with the "Create a 
 - All three members approved and paid through the website's own button (3 of 3 paid in round 0).
 - A payout attempt with everyone paid but the round time not over reverts with `RuleSaysNo` (`0x81a15a08`).
 - The website shows names from the share link (`?circle=…&names=…`); names are not stored on-chain.
+
+
+## Payroll (Nov 24 2026)
+
+- Rule circuit: TapeOut processor My 4004 #29 (`0x526b96238cc418d909005e2e2d79e327da4bd0f7`), **circuit #7**, 50 NAND gates, 350 bytes, 11 inputs, 1 output. Allow a payment only if: cycle < number of cycles AND the cycle is due AND the payroll is funded AND the worker is not yet paid for that cycle. Source: `compiler/src/payroll.mjs`, drawing: `docs/circuits/bylaw-payroll-rule.canvas.json`.
+- Checked on the live chain: the five spot cases behave as specified, and 1,590 of the 2,048 input combinations were compared with the reference with zero mismatches (the public RPC then rate-limited the rest).
+- Test payroll created from the website: `0x2ff6430fb315136f5d2711542f71834345cf86d7` (2 workers, 0.004 USDC each per cycle, 2-minute cycles, 2 cycles). Funded by the employer wallet, then all four payments released from the website. A third cycle is refused by the circuit.
