@@ -49,12 +49,14 @@ run();
 // ---- Live circle dashboard ----
 import { DEMO_CIRCLE, wallet, readCircle, connect, actions, waitFor, allowanceOf, short, usdc, EXPLORER, deployCircle, waitReceipt } from './circle.mjs';
 import { validate, deployData } from './create.mjs';
+import { remember, renderFinder } from './finder.mjs';
 let me = null, state = null, allowance = 0;
 const setMode = (dev) => { document.body.classList.toggle('dev', dev); $('m_dev').classList.toggle('on', dev); $('m_simple').classList.toggle('on', !dev); };
 $('m_simple').addEventListener('click', () => setMode(false));
 $('m_dev').addEventListener('click', () => setMode(true));
 if (!wallet()) { $('nowallet').hidden = false; $('okxopen').href = 'https://www.okx.com/download?deeplink=' + encodeURIComponent('okx://wallet/dapp/url?dappUrl=' + encodeURIComponent(location.href)); }
-$('caddr').value = new URLSearchParams(location.search).get('circle') || DEMO_CIRCLE;
+$('caddr').value = new URLSearchParams(location.search).get('circle') || '';
+if ($('caddr').value) { $('circleCard').hidden = false; $('circleHead').hidden = false; }
 const say = (m, cls = '') => { $('cmsg').textContent = m; $('cmsg').className = cls; };
 const NAMES = (new URLSearchParams(location.search).get('names') || '').split(',').map((x) => x.trim());
 const who = (m, i) => { const nm = NAMES[i] || 'Member ' + (i + 1); return (me === m ? 'You, ' + nm : nm) + ' (' + short(m) + ')'; };
@@ -86,6 +88,7 @@ function nextStep() {
 
 async function refresh() {
   const c = $('caddr').value.trim().toLowerCase();
+  if (!c) return;
   say('Loading from X Layer...');
   try { state = await readCircle(c); allowance = me ? await allowanceOf(state, c, me) : 0; } catch (e) { say('Could not read this address as a Bylaw circle.', 'bad'); return; }
   const s = state;
@@ -171,10 +174,15 @@ $('cn_go').addEventListener('click', async () => {
     out('Sent. Waiting for the network...');
     const r = await waitReceipt(h);
     if (!r || r.status !== '0x1' || !r.contractAddress) { out('The circle was not created.', 'bad'); return; }
-    const link = location.origin + location.pathname + '?circle=' + r.contractAddress + '&names=' + encodeURIComponent(f.names.join(','));
+    const link = location.origin + location.pathname + '?circle=' + r.contractAddress + '&names=' + encodeURIComponent(f.names.join(',')) + '&name=' + encodeURIComponent($('cn_name').value.trim());
     out('Your circle is live! Share this link with your members: ' + link, 'ok');
     $('caddr').value = r.contractAddress;
+    $('circleCard').hidden = false; $('circleHead').hidden = false;
+    remember({ kind: 'circle', addr: r.contractAddress, name: $('cn_name').value.trim() || 'Savings circle', names: f.names.join(',') });
     NAMES.splice(0, NAMES.length, ...f.names);
     await refresh();
   } catch (e) { out(e.message || String(e), 'bad'); }
 });
+
+renderFinder($('fd_list'), $('fd_empty'), $('fd_in'), $('fd_go'), $('fd_err'));
+{ const p = new URLSearchParams(location.search); if (p.get('circle')) remember({ kind: 'circle', addr: p.get('circle'), name: p.get('name') || 'Savings circle', names: p.get('names') || '' }); }

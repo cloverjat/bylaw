@@ -50,8 +50,16 @@ footer{padding:20px 0 40px}
 <div class="card step"><b>3</b><h3>Locked for good</h3><p>It goes on X Layer. After that nobody can change it, and the money follows the rule automatically.</p></div>
 </div>
 
-<h2>Try a live savings circle</h2>
-<div class="card" id="circleCard">
+<h2>Find your circle or payroll</h2>
+<div class="card" id="finder">
+<p class="note">Paste the address or link someone shared with you. Your own circles and payrolls on this device are listed below.</p>
+<span style="display:flex;gap:8px;flex-wrap:wrap"><input id="fd_in" placeholder="Paste a circle or payroll address (0x...) or link" style="flex:1 1 260px"><button class="ghost" id="fd_go">Open</button></span>
+<p class="bad" id="fd_err"></p>
+<ul class="members" id="fd_list"></ul>
+<p class="note" id="fd_empty">Nothing here yet. Create a circle or a payroll below, or <a href="?circle=0x8d15e0ec20b56ccac0afe59fab188d0b72d2a3f5&names=Clover%2CTobi%2CBriggs&name=Example%20circle">look at a finished example</a>.</p>
+</div>
+<h2 id="circleHead" hidden>Savings circle</h2>
+<div class="card" id="circleCard" hidden>
 <p class="note simple-only">A real circle, running right now with real (tiny) amounts. Everyone pays in each round, and the rule decides who gets the pot.</p>
 <p class="note" id="nowallet" hidden><b>No wallet found in this browser.</b> <a id="okxopen" href="#">Open this page in the OKX app</a> to connect your wallet.</p>
 <p><button class="ghost" id="conn">Connect wallet</button><span id="me" class="note"></span></p>
@@ -97,6 +105,7 @@ footer{padding:20px 0 40px}
 </div>
 <div class="card" id="payCreate">
 <p class="note">Set it once, then it is locked. Choose your workers, what each is paid per cycle, how often, and for how many cycles. You put in the full amount one time. Each worker's pay is released at the end of each cycle by a public rule. Nobody can change it, not even you. Anything the workers never claim can come back to you only 90 days after the last cycle.</p>
+<label>Payroll name<input id="py_name" placeholder="e.g. Studio team, November"></label>
 <div id="py_rows"></div>
 <p><button class="ghost" id="py_add">+ Add a worker</button></p>
 <label>How long is each pay cycle?<span style="display:flex;gap:8px"><input id="py_per" type="number" min="1" value="7" style="flex:1"><select id="py_unit" style="flex:1"><option value="60">minutes</option><option value="3600">hours</option><option value="86400" selected>days</option></select></span></label>

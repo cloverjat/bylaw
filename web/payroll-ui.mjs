@@ -1,4 +1,5 @@
 import { connect, short, usdc, waitFor, waitReceipt, deployCircle, EXPLORER } from './circle.mjs';
+import { remember } from './finder.mjs';
 import { validatePayroll, payrollTotals, payrollDeployData, readPayroll, payrollActions, payrollAllowance, RECLAIM_DELAY } from './payroll.mjs';
 const $ = (id) => document.getElementById(id);
 const qs = { get: (k) => new URLSearchParams(location.search).get(k) };
@@ -39,7 +40,8 @@ $('py_go').addEventListener('click', async () => {
     say('py_msg', 'Sent. Waiting for the network...');
     const r = await waitReceipt(h);
     if (!r || r.status !== '0x1' || !r.contractAddress) { say('py_msg', 'The payroll was not created.', 'bad'); return; }
-    const link = location.origin + location.pathname + '?payroll=' + r.contractAddress + '&names=' + encodeURIComponent(f.names.join(',')) + '#payCard';
+    const link = location.origin + location.pathname + '?payroll=' + r.contractAddress + '&names=' + encodeURIComponent(f.names.join(',')) + '&name=' + encodeURIComponent($('py_name').value.trim()) + '#payCard';
+    remember({ kind: 'payroll', addr: r.contractAddress, name: $('py_name').value.trim() || 'Payroll', names: f.names.join(',') });
     say('py_msg', 'Payroll created. Open this link to fund it (step 2) and share it with your team: ' + link, 'ok');
     history.replaceState(null, '', link); NAMES.splice(0, NAMES.length, ...f.names); await load();
 setInterval(() => { if (!document.hidden) load(); }, 15000);
@@ -58,6 +60,7 @@ async function load() {
   const c = qs.get('payroll');
   if (!c) return;
   $('payCard').hidden = false;
+  { const nm = qs.get('name'); if (nm) $('pv_title').textContent = nm; remember({ kind: 'payroll', addr: c, name: nm || 'Payroll', names: qs.get('names') || '' }); }
   try { S = await readPayroll(c.toLowerCase()); } catch (e) { say('pv_msg', 'Could not read this payroll: ' + e.message, 'bad'); return; }
   const done = S.paid.flat().filter(Boolean).length, all = S.cycles * S.count;
   $('pv_bar').style.width = (all ? (done / all) * 100 : 0) + '%';
