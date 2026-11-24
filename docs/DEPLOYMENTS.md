@@ -28,3 +28,11 @@ Circle `0x0a9721d77a9e378e0d968a862a9dd85488392628`, built with solc 0.8.39 (the
 - A payout to the wrong member (index 1 in round 0) reverts with `RuleSaysNo` (`0x81a15a08`): the circuit refuses it.
 - `payout(0)` by the dev wallet: tx `0xc1b1fa02c570ca4c705ee33622d2049d94ba4c8f0f521432003083e74bfeabf1`. Member A received 0.0297 USDC, fee recipient received 0.0003 USDC (1%). Circle balance 0, round 1.
 - The circuit pays only when ALL of these hold: the recipient is the member whose turn it is, every member has paid this round, and the round's time is over. (Round 0's payout worked because its time had already passed. Everyone paid but time not over, or someone missing, gives `RuleSaysNo`.)
+
+## Circle created from the website (X Layer mainnet, 2026-11-24)
+
+Circle `0x8d15e0ec20b56ccac0afe59fab188d0b72d2a3f5`, created with the "Create a circle" screen of https://bylaw-build.netlify.app from the dev wallet. Same code as the demo circle (identical metadata hash), 3 members (Clover `0x11Bc…e7de`, Tobi `0xaf37…f5dc`, Briggs `0x9a07…067a`), 0.01 USDC per round, 1800 s rounds, 1% fee, circuit #6.
+
+- All three members approved and paid through the website's own button (3 of 3 paid in round 0).
+- A payout attempt with everyone paid but the round time not over reverts with `RuleSaysNo` (`0x81a15a08`).
+- The website shows names from the share link (`?circle=…&names=…`); names are not stored on-chain.

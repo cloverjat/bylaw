@@ -16,8 +16,8 @@ Pick a money rule, read it back in plain words, and Bylaw proves the circuit mat
 | Web demo that proves rules in the browser (`web/`) | Working |
 | **Bylaw Circle**, a savings circle where a public circuit decides who gets paid (`contracts/src/BylawCircle.sol`) | Tested end to end on a mock TapeOut. No owner or admin functions |
 | Tape-out and deploy on X Layer | Done: circuit #6, demo circle run end to end (docs/DEPLOYMENTS.md) |
-| Live circle dashboard (`web/circle.mjs`): wallet connect, approve, contribute, payout | Built; needs a browser wallet test |
-| Vault contract, AI helper, privacy layer | Not started (privacy is planned for later) |
+| Website (`web/`): simple view for everyone, developer view for engineers. Create a circle, connect a wallet, pay in, see the rule, run the prover | Working on X Layer mainnet; tested end to end with a circle created from the site |
+| Payroll (locked schedule that pays workers), vault rules, privacy layer | Planned, not built |
 
 ## How it works
 
