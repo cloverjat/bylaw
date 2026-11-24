@@ -1,44 +1,88 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Bylaw: rules your money can't break</title>
+<meta name="description" content="Save together without trusting one person with the pot. The rules are locked on the blockchain, so nobody can cheat, not even us.">
 <style>
-:root{--ink:#0E1B2C;--mint:#34D399;--bg:#f7f9fb;--line:#dbe3ea}
-*{box-sizing:border-box}body{margin:0;font:16px/1.5 Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
-header{background:var(--ink);color:#fff;padding:28px 20px}
-header h1{margin:0;font-size:28px}header p{margin:6px 0 0;color:var(--mint);font-size:18px}
-main{max-width:760px;margin:0 auto;padding:20px}
-.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px}
-label{display:block;margin:10px 0;font-size:14px}select,input{display:block;width:100%;margin-top:4px;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit}
-.sentence{font-size:20px;font-weight:600}
-.ok{color:#047857;font-weight:600}.bad{color:#b91c1c;font-weight:700}
+:root{--ink:#0E1B2C;--mint:#34D399;--mintd:#047857;--bg:#f4f7fa;--line:#dbe3ea;--mut:#52606d}
+*{box-sizing:border-box}body{margin:0;font:16px/1.55 Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+.wrap{max-width:820px;margin:0 auto;padding:0 18px}
+nav{background:var(--ink);color:#fff}nav .wrap{display:flex;justify-content:space-between;align-items:center;padding:14px 18px}
+.logo{font-weight:800;font-size:20px;letter-spacing:.3px}.logo span{color:var(--mint)}
+.seg{display:inline-flex;background:#1b2b42;border-radius:999px;padding:3px}.seg button{background:none;color:#cbd5e1;border:0;border-radius:999px;padding:7px 14px;font:inherit;font-size:14px;cursor:pointer;margin:0}
+.seg button.on{background:var(--mint);color:var(--ink);font-weight:700}
+.hero{background:var(--ink);color:#fff;padding:36px 0 46px}
+.hero h1{font-size:clamp(30px,6vw,46px);line-height:1.1;margin:0 0 12px}.hero h1 span{color:var(--mint)}
+.hero p{font-size:18px;color:#cbd5e1;max-width:580px;margin:0}
+h2{font-size:22px;margin:30px 0 10px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+.step b{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--mint);color:var(--ink);margin-bottom:8px}
+.step h3{margin:0 0 4px;font-size:17px}.step p{margin:0;color:var(--mut);font-size:15px}
+.big{font-size:20px;font-weight:700;margin:0 0 6px}
+.members{list-style:none;padding:0;margin:12px 0}
+.members li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;font-size:15px}
+.pill{font-size:12px;border-radius:999px;padding:3px 10px;background:#eef2f6;color:var(--mut);white-space:nowrap}.pill.g{background:#d1fae5;color:var(--mintd)}.pill.y{background:#fef3c7;color:#92400e}
+.bar{height:10px;background:#e5ebf0;border-radius:99px;overflow:hidden;margin:6px 0 12px}.bar i{display:block;height:100%;background:var(--mint);width:0;transition:width .4s}
+.cta{width:100%;background:var(--mint);color:var(--ink);font-weight:800;font-size:18px;border:0;border-radius:12px;padding:16px;cursor:pointer}
+.cta:disabled{opacity:.45;cursor:default}
+.ghost{background:#fff;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:9px 14px;font:inherit;cursor:pointer;margin-right:6px}
+label{display:block;margin:10px 0;font-size:14px}select,input{display:block;width:100%;margin-top:4px;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit;background:#fff}
+.sentence{font-size:19px;font-weight:600}
+.ok{color:var(--mintd);font-weight:600}.bad{color:#b91c1c;font-weight:600}
 pre{background:#0E1B2C;color:#d1fae5;padding:12px;border-radius:8px;overflow:auto;font-size:12px;white-space:pre-wrap;word-break:break-all}
-button{background:var(--ink);color:#fff;border:0;border-radius:8px;padding:10px 14px;font:inherit;margin:4px 4px 4px 0;cursor:pointer}button:disabled{opacity:.4}
-small,.note{color:#52606d;font-size:13px}.err{color:#b91c1c}
+small,.note{color:var(--mut);font-size:13px}
+details{margin-top:10px}summary{cursor:pointer;color:var(--mintd);font-weight:600}
+.dev-only{display:none}body.dev .dev-only{display:block}body.dev .simple-only{display:none}
+.kv{display:grid;grid-template-columns:130px 1fr;gap:4px 10px;font-size:13px;word-break:break-all}.kv b{color:var(--mut);font-weight:600}
+footer{padding:20px 0 40px}
 </style></head><body>
-<header><h1>Bylaw</h1><p>Rules your money can't break.</p></header>
-<main>
-<div class="card" id="circleCard">
-<h2 style="margin:0 0 4px">Live savings circle on X Layer</h2>
-<p class="note">Everyone pays in each round. A public circuit, locked on X Layer, decides who gets the pot. Nobody can change the rule, not even us.</p>
-<label>Circle address<input id="caddr" spellcheck="false"></label>
-<button id="load">Load circle</button> <button id="conn">Connect wallet</button> <span id="me" class="note"></span>
-<div id="cview" hidden>
-<p class="sentence" id="chead"></p>
-<ul id="clist" style="padding-left:18px"></ul>
-<p class="note" id="cfacts"></p>
-<p><button id="b_approve">1. Allow the circle to take my payments</button> <button id="b_contribute">2. Pay this round</button> <button id="b_payout">3. Pay out this round's winner</button></p>
-<p class="note">1 is a permission slip, no money moves. 2 pays your share. 3 can be pressed by anyone: the circuit decides if it is allowed. Your wallet asks you to approve each step; read it before you confirm.</p>
-<p id="cmsg"></p>
+<nav><div class="wrap"><div class="logo">By<span>law</span></div>
+<div class="seg"><button id="m_simple" class="on">Simple</button><button id="m_dev">Developer</button></div></div></nav>
+<div class="hero"><div class="wrap">
+<h1>Rules your money <span>can't break.</span></h1>
+<p>Save together without trusting one person with the pot. The rules are locked on the blockchain, so nobody can cheat. Not the organizer, not even us.</p>
 </div></div>
-<div class="card"><label>Pick a rule<select id="tpl"></select></label><p class="note" id="blurb"></p><div id="params"></div><p class="err" id="error"></p></div>
-<div id="out" class="card" hidden>
-<small>What this rule says. Read it: the proof only checks the circuit against this rule.</small>
+<div class="wrap">
+<h2>How it works</h2>
+<div class="steps">
+<div class="card step"><b>1</b><h3>Pick a rule</h3><p>Like "everyone pays, then one person gets the pot, in turn." You read it in plain words.</p></div>
+<div class="card step"><b>2</b><h3>We prove it</h3><p>The rule is checked against every possible case, so it can't hide a trick.</p></div>
+<div class="card step"><b>3</b><h3>Locked for good</h3><p>It goes on X Layer. After that nobody can change it, and the money follows the rule automatically.</p></div>
+</div>
+
+<h2>Try a live savings circle</h2>
+<div class="card" id="circleCard">
+<p class="note simple-only">A real circle, running right now with real (tiny) amounts. Everyone pays in each round, and the rule decides who gets the pot.</p>
+<p><button class="ghost" id="conn">Connect wallet</button><span id="me" class="note"></span></p>
+<div id="cview" hidden>
+<p class="big" id="chead"></p>
+<div class="bar"><i id="cbar"></i></div>
+<small id="cprog"></small>
+<ul class="members" id="clist"></ul>
+<button class="cta" id="cta" disabled>Connect your wallet to start</button>
+<p class="note" id="chelp"></p>
+<p id="cmsg"></p>
+<p class="note" id="cfacts"></p>
+<div class="dev-only"><div class="kv" id="ckv"></div>
+<p><button class="ghost" id="b_approve">approve()</button><button class="ghost" id="b_contribute">contribute()</button><button class="ghost" id="b_payout">payout(round)</button></p>
+<div><small>Circle address</small><input id="caddr" spellcheck="false"><button class="ghost" id="load" style="margin-top:6px">Load circle</button></div></div>
+</div></div>
+
+<h2>Rule lab</h2>
+<div class="card">
+<label>Choose a rule<select id="tpl"></select></label><p class="note" id="blurb"></p><div id="params"></div><p class="bad" id="error"></p>
+<div id="out" hidden>
 <p class="sentence" id="sentence"></p>
 <p id="status"></p>
+<details><summary>Show the technical proof</summary>
 <small>Proof certificate</small><pre id="cert"></pre>
-<small>Circuit (<span id="gates"></span>), ready to tape out on X Layer</small><pre id="netlist"></pre>
+<small>Circuit (<span id="gates"></span>), ready to tape out on X Layer</small><pre id="netlist"></pre></details>
+</div></div>
+
+<div class="card dev-only"><b>Developer notes</b>
+<div class="kv" style="margin-top:8px"><b>Chain</b><span>X Layer, id 196</span><b>Processor</b><span>0x526b96238cc418d909005e2e2d79e327da4bd0f7 (TapeOut My 4004 #29)</span><b>Circuit</b><span>#6, 58 NAND gates, 17 in, 1 out</span><b>Circle</b><span>BylawCircle: ownerless, stores keccak256(netlist), rechecks on every payout, fee fixed at creation (max 1%)</span><b>Source</b><span><a href="https://github.com/cloverjat/bylaw">github.com/cloverjat/bylaw</a></span></div></div>
+
+<footer><p class="note">Experimental and unaudited. Use only money you can afford to lose. Not affiliated with OKX or TapeOut. The proof shows the circuit matches the rule you read; it cannot tell whether the rule is what you meant. Everything on a circle is public on the blockchain.</p></footer>
 </div>
-<p class="note">Experimental and unaudited. Not affiliated with OKX or TapeOut. The proof shows the circuit matches the rule above; it cannot tell whether the rule is what you meant.</p>
-</main>
 <script>/*APP*/</script>
 </body></html>

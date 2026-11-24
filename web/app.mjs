@@ -25,7 +25,7 @@ function run() {
     const t0 = performance.now();
     const { certificate, circuit } = certify(spec);
     $('status').textContent = certificate.proved
-      ? `Proven: the circuit matches the rule on all ${certificate.inputsChecked.toLocaleString()} possible inputs (${Math.round(performance.now() - t0)} ms).`
+      ? `Verified: this rule was checked against all ${certificate.inputsChecked.toLocaleString()} possible cases and never breaks (${Math.round(performance.now() - t0)} ms).`
       : 'PROOF FAILED. Do not use this circuit.';
     $('status').className = certificate.proved ? 'ok' : 'bad';
     $('cert').textContent = JSON.stringify(certificate, null, 2);
@@ -41,44 +41,73 @@ run();
 
 // ---- Live circle dashboard ----
 import { DEMO_CIRCLE, readCircle, connect, actions, waitFor, allowanceOf, short, usdc, EXPLORER } from './circle.mjs';
-let me = null, state = null;
+let me = null, state = null, allowance = 0;
+const setMode = (dev) => { document.body.classList.toggle('dev', dev); $('m_dev').classList.toggle('on', dev); $('m_simple').classList.toggle('on', !dev); };
+$('m_simple').addEventListener('click', () => setMode(false));
+$('m_dev').addEventListener('click', () => setMode(true));
 $('caddr').value = new URLSearchParams(location.search).get('circle') || DEMO_CIRCLE;
 const say = (m, cls = '') => { $('cmsg').textContent = m; $('cmsg').className = cls; };
+const who = (m, i) => (me === m ? 'You' : 'Member ' + (i + 1)) + ' (' + short(m) + ')';
+
+function nextStep() {
+  const s = state;
+  if (s.failed || s.round >= s.count) return null;
+  const idx = me ? s.members.indexOf(me) : -1;
+  const everyonePaid = s.paid.every(Boolean);
+  const windowOver = s.now >= s.roundEnd;
+  if (!me) return { label: 'Connect your wallet to start', act: 'connect', help: 'You need the OKX Wallet with a little USDC and OKB on X Layer.' };
+  if (idx >= 0 && !s.paid[idx]) {
+    if (allowance < s.contribution) return { label: 'Step 1: allow this circle to take your payment', act: 'approve', help: 'A permission slip. No money moves yet. Your wallet will ask you to confirm.' };
+    return { label: 'Pay your share: ' + usdc(s.contribution) + ' USDC', act: 'contribute', help: 'Your wallet shows the exact amount before you confirm.' };
+  }
+  if (everyonePaid || windowOver) return { label: 'Send the pot to ' + who(s.members[s.round], s.round), act: 'payout', help: 'Anyone can press this. The public rule checks it first, and refuses if it is the wrong person or too early.' };
+  return { label: 'Waiting for the others to pay', act: null, help: idx < 0 ? 'This wallet is not a member of this circle.' : 'You have paid. The pot can be sent once everyone has paid or the waiting time is over.' };
+}
 
 async function refresh() {
   const c = $('caddr').value.trim().toLowerCase();
   say('Loading from X Layer...');
-  try { state = await readCircle(c); } catch (e) { say('Could not read this address as a Bylaw circle.', 'bad'); return; }
+  try { state = await readCircle(c); allowance = me ? await allowanceOf(state, c, me) : 0; } catch (e) { say('Could not read this address as a Bylaw circle.', 'bad'); return; }
   const s = state;
   $('cview').hidden = false;
   const done = s.round >= s.count;
   $('chead').textContent = s.failed ? 'This circle was closed.' : done ? 'Finished: every member has been paid.'
-    : `Round ${s.round + 1} of ${s.count}: ${short(s.members[s.round])} gets the pot (${usdc(s.contribution * s.count)} USDC).`;
+    : `Round ${s.round + 1} of ${s.count}: ${who(s.members[s.round], s.round)} gets ${usdc(s.contribution * s.count)} USDC.`;
+  const paidN = s.paid.filter(Boolean).length;
+  $('cbar').style.width = (done ? 100 : (paidN / s.count) * 100) + '%';
+  $('cprog').textContent = done ? '' : `${paidN} of ${s.count} have paid in this round`;
   $('clist').innerHTML = s.members.map((m, i) => {
-    const tags = [i === s.round && !done ? 'wins this round' : i < s.round ? 'already paid out' : '', !done && s.paid[i] ? 'paid in' : !done ? 'not paid yet' : '', me === m ? 'you' : ''].filter(Boolean).join(', ');
-    return `<li><b>${short(m)}</b> (${tags})</li>`;
+    const p = done || i < s.round ? '<span class="pill g">got their turn</span>' : i === s.round ? '<span class="pill y">gets this round</span>' : '';
+    const q = done ? '' : s.paid[i] ? '<span class="pill g">paid</span>' : '<span class="pill">not paid yet</span>';
+    return `<li><span>${who(m, i)}</span><span>${p} ${q}</span></li>`;
   }).join('');
   const left = s.roundEnd - s.now;
-  $('cfacts').innerHTML = `Each member pays ${usdc(s.contribution)} USDC per round. The circle fee is ${s.feeBps / 100}% of each pot, sent automatically to ${short(s.feeRecipient)}. Held now: ${usdc(s.balance)} USDC. ` +
+  $('cfacts').innerHTML = `Each member pays ${usdc(s.contribution)} USDC a round. A ${s.feeBps / 100}% circle fee is taken from each pot automatically. Held in the circle now: ${usdc(s.balance)} USDC. ` +
     (done || s.failed ? '' : left > 0 ? `If someone is missing, the waiting time ends in about ${Math.ceil(left / 60)} min.` : 'The waiting time is over.') +
-    ` <a href="${EXPLORER}/address/${$('caddr').value.trim()}" target="_blank" rel="noopener">View on explorer</a>`;
+    ` <a href="${EXPLORER}/address/${c}" target="_blank" rel="noopener">View on the blockchain explorer</a>`;
+  $('ckv').innerHTML = `<b>Circle</b><span>${c}</span><b>Token</b><span>${s.token}</span><b>Circuit</b><span>#${s.circuitId} on ${s.processor}</span><b>Netlist hash</b><span>${s.netlistHash}</span><b>Fee</b><span>${s.feeBps} bps to ${s.feeRecipient}</span><b>Round</b><span>${s.round} (paidCount ${s.paidCount})</span>`;
+  const n = nextStep();
+  $('cta').disabled = !n || !n.act;
+  $('cta').textContent = n ? n.label : done ? 'All done' : 'Closed';
+  $('cta').dataset.act = n && n.act || '';
+  $('chelp').textContent = n ? n.help : '';
   for (const b of ['approve', 'contribute', 'payout']) $('b_' + b).disabled = !me || done || s.failed;
   say('');
 }
 async function act(name) {
   try {
+    if (name === 'connect') { me = await connect(); $('me').textContent = ' Connected: ' + short(me); await refresh(); return; }
     const c = $('caddr').value.trim().toLowerCase();
     say('Check your wallet and read the popup before you confirm...');
     const h = await actions[name](me, c, state);
     say('Sent. Waiting for confirmation...');
     const ok = await waitFor(h);
     await refresh();
-    say(ok ? 'Done. ' + 'Transaction ' + h.slice(0, 10) + '… confirmed.' : 'The transaction did not confirm.', ok ? 'ok' : 'bad');
+    say(ok ? 'Done. Transaction ' + h.slice(0, 10) + '... confirmed.' : 'The transaction did not confirm.', ok ? 'ok' : 'bad');
   } catch (e) { say(e.message || String(e), 'bad'); }
 }
 $('load').addEventListener('click', refresh);
-$('conn').addEventListener('click', async () => {
-  try { me = await connect(); $('me').textContent = 'Connected: ' + short(me); await refresh(); } catch (e) { say(e.message, 'bad'); }
-});
+$('conn').addEventListener('click', () => act('connect'));
+$('cta').addEventListener('click', () => act($('cta').dataset.act));
 for (const b of ['approve', 'contribute', 'payout']) $('b_' + b).addEventListener('click', () => act(b));
 refresh();
