@@ -200,3 +200,16 @@ window.addEventListener('bylaw:account', (e) => showAcct(e.detail));
 navBtn.addEventListener('click', async () => { try { showAcct(await connect()); } catch (e) { navBtn.textContent = 'Connect wallet'; alert(e.message || 'Could not connect.'); } });
 
 initI18n();
+
+// Progress strips on the create forms: 1 fill in, 2 review, 3 confirm in wallet.
+for (const p of ['cn', 'py', 'wc']) {
+  const strip = $(p + '_prog'), sum = $(p + '_sum'), msg = $(p + '_msg');
+  if (!strip || !sum || !msg) continue;
+  const set = () => {
+    const step = msg.textContent.trim() ? 3 : sum.hidden ? 1 : 2;
+    [...strip.children].forEach((el, i) => { el.className = i + 1 === step ? 'on' : i + 1 < step ? 'done' : ''; });
+  };
+  new MutationObserver(set).observe(sum, { attributes: true, attributeFilter: ['hidden'] });
+  new MutationObserver(set).observe(msg, { childList: true, characterData: true, subtree: true });
+  set();
+}

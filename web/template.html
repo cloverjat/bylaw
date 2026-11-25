@@ -35,6 +35,10 @@ nav{background:rgba(7,18,13,.85);backdrop-filter:blur(8px);position:sticky;top:0
 .splash .slang{position:absolute;top:16px;right:16px}
 .langbtn{background:var(--card);border:1px solid var(--line);color:var(--ink);font:inherit;font-size:13px;border-radius:999px;padding:7px 13px;cursor:pointer}
 .navr{display:flex;gap:8px;align-items:center}
+
+.prog{display:flex;gap:6px;margin:0 0 14px}.prog span{flex:1;text-align:center;font-size:12px;color:var(--mut);border-top:3px solid var(--line);padding-top:6px}
+.prog span.on{color:var(--mintd);border-color:var(--mint);font-weight:700}.prog span.done{color:var(--mut);border-color:#1c6b43}
+.gloss dl{margin:10px 0 0}.gloss dt{font-weight:700;color:#fff;margin-top:12px}.gloss dd{margin:2px 0 0;color:var(--mut);font-size:15px}
 .seg{display:inline-flex;background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:3px}.seg button{background:none;color:var(--mut);border:0;border-radius:999px;padding:7px 14px;font:inherit;font-size:14px;cursor:pointer;margin:0}
 .seg button.on{background:var(--mint);color:#04140b;font-weight:700}
 .hero{padding:44px 0 26px}
@@ -106,6 +110,17 @@ footer{padding:20px 0 40px}
 <div class="card step"><b>3</b><h3>Locked for good</h3><p>It goes on X Layer. After that nobody can change it, and the money follows the rule automatically.</p></div>
 </div>
 
+<div class="card gloss"><details><summary>What these words mean</summary><dl>
+<dt>Rule</dt><dd>A small program on the blockchain that decides when money can move. You read it in plain words, and nobody can change it after it is locked.</dd>
+<dt>Circle</dt><dd>A group saving plan. Everyone pays the same amount each round, and the whole pot goes to one member per round, in turn.</dd>
+<dt>Payroll</dt><dd>Pay for a team, released automatically at the end of each cycle by a public rule.</dd>
+<dt>Step</dt><dd>The unit a wallet limit is counted in. If one step is 5 USDC, a limit of 10 steps means 50 USDC.</dd>
+<dt>Proof</dt><dd>A check that the rule behaves correctly for every possible case before it is locked.</dd>
+<dt>USDC</dt><dd>A digital dollar. One USDC is worth one US dollar.</dd>
+<dt>X Layer</dt><dd>The blockchain where Bylaw rules live. It is run by OKX.</dd>
+<dt>Gas (OKB)</dt><dd>A small network fee, paid in OKB, to record something on X Layer.</dd>
+<dt>Wallet address</dt><dd>Your public account number. It starts with 0x. Anyone can send money to it, but only you can spend from it.</dd>
+</dl></details></div>
 <h2>Find your circle or payroll</h2>
 <div class="card" id="finder">
 <p class="note">Paste the address or link someone shared with you. Your own circles and payrolls on this device are listed below.</p>
@@ -136,6 +151,8 @@ footer{padding:20px 0 40px}
 
 <h2>Create your own circle</h2>
 <div class="card" id="createCard">
+<div class="prog" id="cn_prog"><span class="on">1. Fill it in</span><span>2. Review</span><span>3. Confirm in your wallet</span></div>
+
 <p class="note">Set it up once, in plain words. After you create it, nobody can change it, not even you.</p>
 <label>Circle name<input id="cn_name" placeholder="e.g. Family savings"></label>
 <div id="cn_rows"></div>
@@ -164,6 +181,8 @@ footer{padding:20px 0 40px}
 <div class="dev-only"><div class="kv" id="pv_kv"></div></div>
 </div>
 <div class="card" id="payCreate">
+<div class="prog" id="py_prog"><span class="on">1. Fill it in</span><span>2. Review</span><span>3. Confirm in your wallet</span></div>
+
 <p class="note">Set it once, then it is locked. Choose your workers, what each is paid per cycle, how often, and for how many cycles. You put in the full amount one time. Each worker's pay is released at the end of each cycle by a public rule. Nobody can change it, not even you. Anything the workers never claim can come back to you only 90 days after the last cycle.</p>
 <label>Payroll name<input id="py_name" placeholder="e.g. Studio team, November"></label>
 <div id="py_rows"></div>
@@ -207,6 +226,8 @@ footer{padding:20px 0 40px}
 </div>
 <h2>Create a Bylaw Wallet</h2>
 <div class="card" id="walCreate">
+<div class="prog" id="wc_prog"><span class="on">1. Fill it in</span><span>2. Review</span><span>3. Confirm in your wallet</span></div>
+
 <p class="note">A wallet that holds USDC and only sends it when a public rule says yes. Even if your key is stolen, it can only do what the rule allows. You choose the rule once and it is locked. Experimental: start with a small amount.</p>
 <label>Wallet name<input id="wc_name" placeholder="e.g. Team spending"></label>
 <label>Rule<select id="wc_kind"></select></label>

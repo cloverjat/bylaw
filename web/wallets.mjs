@@ -54,6 +54,7 @@ function modal(title, bodyBuilder) {
     const h = document.createElement('div'); h.style.cssText = 'font-weight:700;font-size:18px;margin-bottom:10px'; h.textContent = title; box.appendChild(h);
     const done = (v) => { back.remove(); resolve(v); };
     bodyBuilder(box, done);
+    const n = document.createElement('div'); n.style.cssText = 'margin-top:10px;font-size:13px;color:#555'; n.textContent = 'Your wallet is your account. There is no password and no email.'; box.appendChild(n);
     const x = document.createElement('button'); x.textContent = 'Cancel'; x.style.cssText = 'margin-top:12px;width:100%;padding:10px;border:0;border-radius:10px;background:#eee;font-size:15px;cursor:pointer';
     x.onclick = () => done(null); box.appendChild(x);
     back.onclick = (e) => { if (e.target === back) done(null); };
