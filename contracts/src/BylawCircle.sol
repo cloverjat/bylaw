@@ -12,7 +12,7 @@ interface IERC20Like {
 }
 
 /// @title BylawCircle
-/// @notice A savings circle (ajo / esusu). Every member pays a fixed amount each round.
+/// @notice A savings circle (a rotating savings group). Every member pays a fixed amount each round.
 ///         When the round period has ended and everyone has paid, the pot goes to the
 ///         member whose turn it is. Who may be paid, and when, is decided only by a
 ///         public TapeOut circuit. There is no owner, admin, pause or upgrade path.
@@ -20,6 +20,7 @@ interface IERC20Like {
 ///      creation and re-checked on every payout, so a TapeOut upgrade cannot change the rule.
 contract BylawCircle {
     uint256 public constant GRACE = 7 days;
+    uint256 public constant STUCK_AFTER = 30 days; // everyone paid but the payout still cannot happen
     uint256 public constant EVAL_GAS = 3_000_000;
     uint8 public constant MAX_MEMBERS = 15;
     uint256 public constant MAX_FEE_BPS = 100; // fee can never exceed 1%
@@ -143,12 +144,15 @@ contract BylawCircle {
         emit PaidOut(r, to, pot - fee);
     }
 
-    /// @notice If someone has not paid a long time after the round ended, anyone can close the circle.
+    /// @notice If someone has not paid a week after the round ended, or the payout has been stuck for 30 days
+    ///         (for example the public rule changed), anyone can close the circle.
     ///         Members who paid into the stuck round can then take their contribution back.
     function declareFailed() external {
         if (failed) revert CircleFailedState();
         if (round >= memberCount()) revert CircleFinished();
-        if (paidCount >= memberCount() || block.timestamp < roundEnd() + GRACE) revert TooEarly();
+        bool someoneMissing = paidCount < memberCount() && block.timestamp >= roundEnd() + GRACE;
+        bool payoutStuck = block.timestamp >= roundEnd() + STUCK_AFTER; // e.g. the rule was changed or broke
+        if (!someoneMissing && !payoutStuck) revert TooEarly();
         failed = true;
         emit Failed(round);
     }

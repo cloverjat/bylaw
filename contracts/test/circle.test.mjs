@@ -110,3 +110,19 @@ test('no owner or admin functions exist', async () => {
     assert.ok(!names.includes(bad), bad);
   }
 });
+
+test('everyone paid but the rule was swapped: after 30 days the circle can be closed and all get refunded', async () => {
+  const { tape, token, circle, members, s, warp, period } = await setup();
+  for (const m of members) await (await circle.connect(m).contribute()).wait();
+  await warp(Number(period) + 1);
+  const evil = new Builder(17);
+  const out = evil.build([evil.not(evil.input(16))]);
+  await (await tape.register(1, hex(out.bytes), 17, 1)).wait();
+  await assert.rejects(circle.connect(s[5]).payout(0));
+  await warp(8 * 24 * 3600);
+  await assert.rejects(circle.declareFailed.staticCall()); // a week is not enough when everyone paid
+  await warp(23 * 24 * 3600);
+  await (await circle.declareFailed()).wait();
+  for (const m of members) await (await circle.connect(m).claimRefund()).wait();
+  for (const m of members) assert.equal(await token.balanceOf(await m.getAddress()), 1000n);
+});

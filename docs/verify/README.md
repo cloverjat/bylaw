@@ -7,3 +7,6 @@ Checked: the metadata hash at the end of the deployed bytecode of circle 0x8d15e
 
 Constructor arguments: take the creation transaction input of the instance and cut off the first N bytes, where N is the length of the bytecode in web/bytecode.mjs (circle) or web/payroll-bytecode.mjs (payroll). What remains is the ABI-encoded constructor arguments to paste into the explorer.
 Every circle/payroll is its own contract, so each instance needs its own verification.
+
+## Two circle versions
+BylawCircle.standard-input.json is version 1 (the circles and the test circle made before 25 Nov 2026). BylawCircle-v2.standard-input.json is version 2, used by every circle created from the site after that: it adds a 30-day escape (anyone can close the circle and everyone is refunded) when everyone has paid but the payout cannot happen, for example because the public rule changed. Verify each circle with the file for its version.
