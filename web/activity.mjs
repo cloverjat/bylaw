@@ -16,6 +16,12 @@ const T = {
   Proposed: '0x21f7580aa2b5b07069e9a68b5bd444ccf128366ccf5044afe7267a9e9dce7e9e',
   Confirmed: '0x5745b04f0487ed3df77aef07f8203e42e3dda220117bb702fbb3fd48fb148d61',
   Rescued: '0x0deb6907e08e0c8bfdc09caa98a30090e97376ae37fa2acae1e67c2eb96b13a2',
+  EAccepted: '0x8c514b93b9b424fc26b0ed809001bfece616f4f88335e0f31827658d3a2786ea',
+  ELocked: '0xf26b23f4faf546e2647b477c0eb493c07bbb7bd04c865a3d33ba1d99687d88c6',
+  EApproved: '0x5de8e1faddeb54f5a59778c514254ea03868310d878ada71ed5118bfc800ea0d',
+  ERefundOffered: '0xc170b5cf4d3a7e84435145ceba8ef703cacb54061c0d327462fbad03af49176d',
+  EPaid: '0x9915110ac2b3b02be191bec75e4288f7c93f337f149aed070d7603081a27fb68',
+  EReturned: '0x9b3d76b9ba432d7c69ff4708b24c1ae7735e87a66862c904f45bda9224f892ca',
 };
 const WINDOW = 3600; // blocks (about one hour on X Layer)
 const num = (h) => parseInt(h, 16);
@@ -38,6 +44,12 @@ export function describeLog(l) {
   if (e === T.Proposed) return `Payment #${num(t[1])} of ${usd(word(d, 0))} USDC to ${short(topicAddr(t[2]))} is waiting for confirmation`;
   if (e === T.Confirmed) return `Payment #${num(t[1])} confirmed`;
   if (e === T.Rescued) return `${usd(word(d, 0))} USDC rescued`;
+  if (e === T.EAccepted) return `Seller ${short(topicAddr(t[1]))} accepted the terms`;
+  if (e === T.ELocked) return `Buyer locked ${usd(word(d, 0))} USDC`;
+  if (e === T.EApproved) return 'Buyer approved the delivery';
+  if (e === T.ERefundOffered) return 'Seller agreed to a refund';
+  if (e === T.EPaid) return `${usd(word(d, 0))} USDC released to the seller ${short(topicAddr(t[1]))}`;
+  if (e === T.EReturned) return `${usd(word(d, 0))} USDC returned to the buyer ${short(topicAddr(t[1]))}`;
   return null;
 }
 

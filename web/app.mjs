@@ -52,6 +52,7 @@ import { validate, deployData } from './create.mjs';
 import { initViews } from './views.mjs';
 import { initI18n } from './i18n.mjs';
 import { mountActivity } from './activity.mjs';
+import './escrow-ui.mjs';
 import './splash.mjs';
 import { remember, renderFinder } from './finder.mjs';
 import { ruleBadge, showBadge } from './official.mjs';
@@ -220,4 +221,5 @@ for (const p of ['cn', 'py', 'wc']) {
 { const q = new URLSearchParams(location.search);
   mountActivity('cact', () => ($('caddr').value || '').trim().toLowerCase());
   mountActivity('pact', () => (q.get('payroll') || '').toLowerCase());
+  mountActivity('eact', () => (q.get('escrow') || '').toLowerCase());
   mountActivity('wact', () => (q.get('wallet') || '').toLowerCase()); }

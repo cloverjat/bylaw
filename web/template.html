@@ -66,7 +66,7 @@ h3{color:#fff}
 .cta:disabled{opacity:.4;cursor:default;box-shadow:none}
 .ghost{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:12px;padding:9px 14px;font:inherit;cursor:pointer;margin-right:6px}
 .ghost:hover{border-color:var(--mint)}
-label{display:block;margin:10px 0;font-size:14px;color:var(--ink)}select,input{display:block;width:100%;margin-top:4px;padding:11px;border:1px solid var(--line);border-radius:10px;font:inherit;background:#0a1812;color:var(--ink)}
+label{display:block;margin:10px 0;font-size:14px;color:var(--ink)}textarea{display:block;width:100%;margin-top:4px;padding:11px;border:1px solid var(--line);border-radius:10px;font:inherit;background:#0a1812;color:var(--ink);min-height:110px;resize:vertical}select,input{display:block;width:100%;margin-top:4px;padding:11px;border:1px solid var(--line);border-radius:10px;font:inherit;background:#0a1812;color:var(--ink)}
 input::placeholder{color:#5d7a69}input:focus,select:focus{outline:2px solid var(--mint);outline-offset:0}
 input[type=checkbox]{width:22px;height:22px;accent-color:var(--mint)}
 .sentence{font-size:19px;font-weight:600;color:#fff}
@@ -106,6 +106,7 @@ footer{padding:20px 0 40px}
 <a data-view="home"><i>&#127968;</i>Home</a>
 <a data-view="circle"><i>&#128101;</i>Savings Circle</a>
 <a data-view="payroll"><i>&#128197;</i>Payroll</a>
+<a data-view="escrow"><i>&#129309;</i>Escrow</a>
 <a data-view="wallet"><i>&#128091;</i>Bylaw Wallet</a>
 <a data-view="lab"><i>&lt;/&gt;</i>Rule Lab</a>
 </aside>
@@ -116,6 +117,7 @@ footer{padding:20px 0 40px}
 <div class="tiles">
 <a class="tile" data-view="circle" href="#createCard"><i>&#128101;</i><b>Savings Circle</b><small>Save together</small></a>
 <a class="tile" data-view="payroll" href="#payCreate"><i>&#128197;</i><b>Payroll</b><small>Automate payments</small></a>
+<a class="tile" data-view="escrow" href="#escCreate"><i>&#129309;</i><b>Escrow</b><small>Safe deals and contracts</small></a>
 <a class="tile" data-view="wallet" href="#walCreate"><i>&#128091;</i><b>Bylaw Wallet</b><small>Rule-based wallet</small></a>
 <a class="tile" data-view="lab" href="#tpl"><i>&lt;/&gt;</i><b>Rule Lab</b><small>See how rules work</small></a>
 </div></div></div>
@@ -216,6 +218,37 @@ footer{padding:20px 0 40px}
 <label class="ack" style="display:flex;gap:10px;align-items:flex-start;margin:14px 0;padding:12px;border:2px solid #e0a43a;border-radius:12px;background:#fff8ea;font-size:15px;line-height:1.5"><input type="checkbox" id="py_ack" style="width:22px;height:22px;flex:none;margin-top:2px"><span><b>This cannot be edited or undone.</b> I checked every wallet address and amount. A wrong address cannot be fixed after this payroll is created.</span></label>
 <button class="cta" id="py_go" disabled>Create payroll (your wallet will ask you to confirm)</button>
 <p id="py_msg"></p></div></div>
+<h2>Escrow (agreements)</h2>
+<div class="card" id="escCard" hidden>
+<b id="ec_title">Your agreement</b>
+<div class="prog" id="ec_prog"><span>1. Seller accepts</span><span>2. Buyer locks the money</span><span>3. Buyer approves</span><span>4. Money released</span></div>
+<p class="sentence" id="ec_terms"></p>
+<p class="note" id="ec_check"></p>
+<p id="ebadge" hidden></p>
+<ul class="members" id="ec_list"></ul>
+<button class="cta" id="ec_cta" disabled>Connect your wallet</button>
+<button class="ghost" id="ec_alt" hidden></button>
+<p class="note" id="ec_help"></p>
+<p id="ec_msg"></p>
+<p class="note" id="ec_facts"></p>
+<div class="activity"><b>Activity</b><ul class="members" id="eact"></ul><small class="note">The last hour, kept on this device. <a id="eact_more" target="_blank" rel="noopener">Full history on the explorer</a></small></div>
+<div class="dev-only"><div class="kv" id="ec_kv"></div></div>
+</div>
+<div class="card" id="escCreate">
+<p class="note">For buying something, hiring someone or signing a deal between two people. Write the terms, and the money only moves by the rule: the seller accepts, the buyer locks the money, and it is released only when the buyer approves. If the deadline passes without approval, it goes back to the buyer.</p>
+<label>Deal name<input id="ec_name" placeholder="e.g. Plot 7 purchase"></label>
+<label>Seller's wallet address<input id="ec_seller" placeholder="0x..."></label>
+<label>Amount (USDC)<input id="ec_amt" type="number" min="0" step="0.01" value="100"></label>
+<label>Deadline: how long can the buyer wait for delivery?<span style="display:flex;gap:8px"><input id="ec_per" type="number" min="1" value="7" style="flex:1"><select id="ec_unit" style="flex:1"><option value="3600">hours</option><option value="86400" selected>days</option></select></span></label>
+<label>Terms of the deal (both sides read the same text)<textarea id="ec_text" placeholder="e.g. Seller delivers the signed land documents for plot 7 within 7 days. Buyer approves when they receive them."></textarea></label>
+<p class="bad" id="ec_err"></p>
+<button class="cta" id="ec_review">Review the agreement</button>
+<div id="ec_sum" hidden>
+<p class="sentence" id="ec_sentence"></p>
+<p class="note">Creating it costs a small amount of OKB for network gas. The terms are fixed after this. Send the link to the seller so they can accept.</p>
+<label class="ack" style="display:flex;gap:10px;align-items:flex-start;margin:14px 0;padding:12px;border:2px solid #e0a43a;border-radius:12px;background:#fff8ea;font-size:15px;line-height:1.5"><input type="checkbox" id="ec_ack" style="width:22px;height:22px;flex:none;margin-top:2px"><span><b>This cannot be edited or undone.</b> I checked the seller's wallet address, the amount and the terms.</span></label>
+<button class="cta" id="ec_go" disabled>Create agreement (your wallet will ask you to confirm)</button>
+<p id="ec_cmsg"></p></div></div>
 <h2 id="walHead" hidden>Bylaw Wallet</h2>
 <div class="card" id="walCard" hidden>
 <b id="wl_title">Your Bylaw Wallet</b>

@@ -57,3 +57,8 @@ Fees are fixed inside each contract when it is created, so the table below only 
 Contracts made before the switch (the demo circle, the test circle `0x8d15…a3f5`, the test payroll) keep paying fees to the old dev wallet `0x11BccB28A40ee64EA0eebC3199b9B00D5359e7de`. The website treats both wallets as official.
 
 Wallet rule circuits on TapeOut My 4004 #29: #8 confirm big payments, #9 trusted or small, #10 daily cap. Behaviour checked on-chain with 270 inputs against the reference rules (0 wrong).
+
+## Escrow / Agreement (added 2026-11-25, not yet on mainnet)
+- Contract: `contracts/src/BylawEscrow.sol` (buyer, seller, amount, deadline, SHA-256 fingerprint of the written terms). The seller accepts on-chain (their signature), the buyer locks the money, a public rule releases it to the seller only after the buyer approves, and returns it to the buyer after the deadline without approval or if the seller agrees to a refund.
+- Rule circuit: `compiler/src/escrow.mjs`, 19 NAND gates, 133 bytes, 6 inputs, 2 outputs. Netlist: `docs/circuits/bylaw-escrow-rule.netlist.hex`, drawing: `docs/circuits/bylaw-escrow-rule.canvas.json`. Proven against its reference table for all 64 inputs.
+- Status: needs the circuit taped out on the TapeOut processor (`0x526b…d0f7`), then `ESCROW_DEFAULTS.circuitId` in `web/escrow.mjs` set to the new circuit number.

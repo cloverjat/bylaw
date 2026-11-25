@@ -1,6 +1,6 @@
 // Left-hand menu: each tool gets its own page-like view instead of one long scroll.
-const ORDER = ['home', 'home', 'circle', 'circle', 'payroll', 'wallet', 'wallet', 'lab'];
-const NAMES = ['home', 'circle', 'payroll', 'wallet', 'lab'];
+const ORDER = ['home', 'home', 'circle', 'circle', 'payroll', 'escrow', 'wallet', 'wallet', 'lab'];
+const NAMES = ['home', 'circle', 'payroll', 'escrow', 'wallet', 'lab'];
 
 export function initViews() {
   const wrap = document.querySelectorAll('.wrap')[document.querySelectorAll('.wrap').length - 1];
@@ -13,7 +13,7 @@ export function initViews() {
     groups.push([el, ORDER[Math.max(h, 0)]]);
   }
   const q = new URLSearchParams(location.search);
-  let cur = q.get('circle') ? 'circle' : q.get('payroll') ? 'payroll' : q.get('wallet') ? 'wallet' : 'home';
+  let cur = q.get('circle') ? 'circle' : q.get('payroll') ? 'payroll' : q.get('escrow') ? 'escrow' : q.get('wallet') ? 'wallet' : 'home';
   const show = (v, target) => {
     cur = v;
     for (const [el, g] of groups) el.classList.toggle('vhide', g !== v);

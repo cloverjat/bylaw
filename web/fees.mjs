@@ -4,3 +4,4 @@ export const OLD_FEE_WALLET = '0x11bccb28a40ee64ea0eebc3199b9b00d5359e7de'; // d
 export const CIRCLE_FEE_BPS = 100; // 1% of each pot
 export const PAYROLL_FEE_BPS = 100; // 1% of the payroll total
 export const WALLET_FEE_BPS = 10; // 0.1% added on top of each wallet payment
+export const ESCROW_FEE_BPS = 100; // 1% of the deal amount, added on top when the buyer locks the money
