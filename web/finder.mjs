@@ -1,6 +1,7 @@
 // "Find your circle or payroll": remembers items on this device and opens any address someone shares.
 import { readCircle } from './circle.mjs';
 import { readPayroll } from './payroll.mjs';
+import { readWallet } from './wallet.mjs';
 const KEY = 'bylaw.mine';
 const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { return []; } };
 export function remember(item) {
@@ -9,11 +10,11 @@ export function remember(item) {
     l.unshift(item); localStorage.setItem(KEY, JSON.stringify(l.slice(0, 30)));
   } catch { /* storage may be unavailable: it is only a convenience */ }
 }
-const href = (x) => '?' + (x.kind === 'payroll' ? 'payroll' : 'circle') + '=' + x.addr + '&names=' + encodeURIComponent(x.names || '') + '&name=' + encodeURIComponent(x.name || '');
+const href = (x) => '?' + (x.kind === 'payroll' ? 'payroll' : x.kind === 'wallet' ? 'wallet' : 'circle') + '=' + x.addr + '&names=' + encodeURIComponent(x.names || '') + '&name=' + encodeURIComponent(x.name || '');
 export function renderFinder(list, empty, input, go, err) {
   const items = load();
   empty.hidden = items.length > 0;
-  list.innerHTML = items.map((x) => `<li><span><b>${(x.name || '').replace(/</g, '&lt;')}</b><br><small>${x.kind === 'payroll' ? 'Payroll' : 'Savings circle'} · ${x.addr.slice(0, 6)}…${x.addr.slice(-4)}</small></span><a href="${href(x)}">Open</a></li>`).join('');
+  list.innerHTML = items.map((x) => `<li><span><b>${(x.name || '').replace(/</g, '&lt;')}</b><br><small>${x.kind === 'payroll' ? 'Payroll' : x.kind === 'wallet' ? 'Wallet' : 'Savings circle'} · ${x.addr.slice(0, 6)}…${x.addr.slice(-4)}</small></span><a href="${href(x)}">Open</a></li>`).join('');
   go.addEventListener('click', async () => {
     err.textContent = '';
     const m = input.value.match(/0x[0-9a-fA-F]{40}/);
@@ -22,8 +23,8 @@ export function renderFinder(list, empty, input, go, err) {
     go.disabled = true;
     try {
       let kind = null;
-      try { await readCircle(a); kind = 'circle'; } catch { try { await readPayroll(a); kind = 'payroll'; } catch { /* neither */ } }
-      if (!kind) { err.textContent = 'This address is not a Bylaw savings circle or payroll on X Layer.'; return; }
+      try { await readCircle(a); kind = 'circle'; } catch { try { await readPayroll(a); kind = 'payroll'; } catch { try { await readWallet(a); kind = 'wallet'; } catch { /* none */ } } }
+      if (!kind) { err.textContent = 'This address is not a Bylaw savings circle, payroll or wallet on X Layer.'; return; }
       location.href = href({ kind, addr: a, names: '', name: '' });
     } finally { go.disabled = false; }
   });

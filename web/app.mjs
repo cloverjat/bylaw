@@ -6,14 +6,14 @@ const hex = (u8) => Array.from(u8, (b) => b.toString(16).padStart(2, '0')).join(
 
 const INFO = {
   circle: { what: 'Friends each pay the same amount every round. The whole pot goes to one member per round, in turn, straight to their wallet.', ex: '5 friends pay 10 USDC a month. In month 1, friend 1 gets 50 USDC. In month 2, friend 2 gets it, and so on.', who: 'Friends, family, coworkers and communities who save together (a rotating savings group, also called a ROSCA).', status: 'live', note: 'Live on X Layer. Try it above.' },
-  dailyCap: { what: 'A wallet cannot spend more than a set amount per day. A payment that would go over the cap is refused.', ex: 'A team wallet with a 50 USDC daily cap. If someone steals the key, they can only take 50 a day.', who: 'Teams and businesses that share a wallet.', status: 'soon', note: 'The rule is proven. The wallet contract that enforces it is coming.' },
-  trustedOrSmall: { what: 'Paying a saved, trusted address is always fine. A brand-new address can only get small amounts, and only after a waiting time.', ex: 'Pay your supplier freely. A new address can get at most 5 USDC, and only after 24 hours.', who: 'Anyone worried about typing the wrong address or being scammed.', status: 'soon', note: 'The rule is proven. The wallet contract that enforces it is coming.' },
-  confirmAbove: { what: 'Small payments go through. Anything above your limit needs a second confirmation first.', ex: 'Staff can pay up to 20 USDC. Above that, the owner must also confirm.', who: 'Businesses that want a second pair of eyes on big payments.', status: 'soon', note: 'The rule is proven. The wallet contract that enforces it is coming.' },
+  dailyCap: { what: 'A wallet cannot spend more than a set amount per day. A payment that would go over the cap is refused.', ex: 'A team wallet with a 50 USDC daily cap. If someone steals the key, they can only take 50 a day.', who: 'Teams and businesses that share a wallet.', status: 'live', note: 'Live on X Layer. Create a Bylaw Wallet with this rule in the section above.' },
+  trustedOrSmall: { what: 'Paying a saved, trusted address is always fine. A brand-new address can only get small amounts, and only after a waiting time.', ex: 'Pay your supplier freely. A new address can get at most 5 USDC, and only after 24 hours.', who: 'Anyone worried about typing the wrong address or being scammed.', status: 'live', note: 'Live on X Layer. Create a Bylaw Wallet with this rule in the section above.' },
+  confirmAbove: { what: 'Small payments go through. Anything above your limit needs a second confirmation first.', ex: 'Staff can pay up to 20 USDC. Above that, the owner must also confirm.', who: 'Businesses that want a second pair of eyes on big payments.', status: 'live', note: 'Live on X Layer. Create a Bylaw Wallet with this rule in the section above.' },
 };
 function renderParams(key) {
   const t = TEMPLATES[key];
   const i = INFO[key];
-  $('blurb').innerHTML = `<b>What it does:</b> ${i.what}<br><b>Example:</b> ${i.ex}<br><b>Who it's for:</b> ${i.who}<br><span class="pill ${i.status === 'live' ? 'g' : 'y'}">${i.status === 'live' ? 'Live' : 'Coming soon'}</span> ${i.note}`;
+  $('blurb').innerHTML = `<b>What it does:</b> ${i.what}<br><b>Example:</b> ${i.ex}<br><b>Who it's for:</b> ${i.who}<br><span class="pill g">Live</span> ${i.note}`;
   $('params').innerHTML = t.params.map((p) => `<label>${p.label}<input type="number" id="p_${p.name}" min="${p.min}" max="${p.max}" value="${p.def}"></label>`).join('');
   t.params.forEach((p) => $('p_' + p.name).addEventListener('input', run));
 }
@@ -138,6 +138,7 @@ $('cta').addEventListener('click', () => act($('cta').dataset.act));
 for (const b of ['approve', 'contribute', 'payout']) $('b_' + b).addEventListener('click', () => act(b));
 refresh();
 import './payroll-ui.mjs';
+import './wallet-ui.mjs';
 
 // ---- Create a circle ----
 const rows = [];

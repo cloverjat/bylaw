@@ -122,6 +122,51 @@ footer{padding:20px 0 40px}
 <label class="ack" style="display:flex;gap:10px;align-items:flex-start;margin:14px 0;padding:12px;border:2px solid #e0a43a;border-radius:12px;background:#fff8ea;font-size:15px;line-height:1.5"><input type="checkbox" id="py_ack" style="width:22px;height:22px;flex:none;margin-top:2px"><span><b>This cannot be edited or undone.</b> I checked every wallet address and amount. A wrong address cannot be fixed after this payroll is created.</span></label>
 <button class="cta" id="py_go" disabled>Create payroll (your wallet will ask you to confirm)</button>
 <p id="py_msg"></p></div></div>
+<h2 id="walHead" hidden>Bylaw Wallet</h2>
+<div class="card" id="walCard" hidden>
+<b id="wl_title">Your Bylaw Wallet</b>
+<p class="big" id="wl_bal"></p>
+<p class="note" id="wl_kind"></p>
+<p class="sentence" id="wl_rule"></p>
+<p class="note" id="wl_facts"></p>
+<p id="wl_badge" hidden></p>
+<p id="wl_conn"><button class="ghost" id="wl_connect">Connect wallet</button></p>
+<div id="wl_dep" hidden>
+<label>Put money in (USDC). Anyone can add money; only the owner can take it out, and only through the rule.<input id="wl_dep_amt" type="number" min="0" step="0.01" placeholder="e.g. 5"></label>
+<button class="ghost" id="wl_dep_go">Add USDC to this wallet</button> <small id="wl_mybal"></small>
+</div>
+<p class="note" id="wl_notowner" hidden>You are connected, but this wallet belongs to someone else. You can add money or confirm payments if you are the chosen second person.</p>
+<div id="wl_own" hidden>
+<h3 style="margin:16px 0 4px;font-size:17px">Send money</h3>
+<label>Recipient wallet address<input id="wl_to" placeholder="0x..." spellcheck="false"></label>
+<p class="note" id="wl_to_note"></p>
+<label>Amount (USDC)<input id="wl_amt" type="number" min="0" step="0.01" placeholder="e.g. 3"></label>
+<p class="note" id="wl_propnote" hidden>Above your limit, this creates a request that the second person must confirm first.</p>
+<p><button class="cta" id="wl_send_go">Send (the public rule checks it first)</button></p>
+<p id="wl_save" hidden><button class="ghost" id="wl_save_go">Save this recipient as trusted</button> <small>A saved recipient becomes trusted after 2 days.</small></p>
+</div>
+<div id="wl_props_box" hidden><h3 style="margin:16px 0 4px;font-size:17px">Payments waiting for confirmation</h3><ul class="members" id="wl_props"></ul></div>
+<p id="wl_msg"></p>
+<div class="dev-only"><div class="kv" id="wl_kv"></div></div>
+</div>
+<h2>Create a Bylaw Wallet</h2>
+<div class="card" id="walCreate">
+<p class="note">A wallet that holds USDC and only sends it when a public rule says yes. Even if your key is stolen, it can only do what the rule allows. You choose the rule once and it is locked. Experimental: start with a small amount.</p>
+<label>Wallet name<input id="wc_name" placeholder="e.g. Team spending"></label>
+<label>Rule<select id="wc_kind"></select></label>
+<label>How big is one step?<select id="wc_unit"><option value="1" selected>1 USDC</option><option value="5">5 USDC</option><option value="10">10 USDC</option><option value="100">100 USDC</option></select></label>
+<label id="wc_a_label"><span>Limit</span><input id="wc_a" type="number" min="1" max="63" step="1" value="50"></label>
+<div id="wc_b_row" hidden><label>Waiting time for a new recipient (hours, 0 to 63)<input id="wc_b" type="number" min="0" max="63" step="1" value="24"></label></div>
+<div id="wc_c_row" hidden><label>Wallet address of the second person who must confirm big payments<input id="wc_c" placeholder="0x..." spellcheck="false"></label></div>
+<p class="note" id="wc_help"></p>
+<p class="bad" id="wc_err"></p>
+<button class="cta" id="wc_review">Review my wallet</button>
+<div id="wc_sum" hidden>
+<p class="sentence" id="wc_text"></p>
+<p class="note">Creating costs a little OKB for network gas. No fee is charged for wallets. Limits are counted in whole steps, from 1 to 63 steps. The rule cannot be edited after creation.</p>
+<label class="ack" style="display:flex;gap:10px;align-items:flex-start;margin:14px 0;padding:12px;border:2px solid #e0a43a;border-radius:12px;background:#fff8ea;font-size:15px;line-height:1.5"><input type="checkbox" id="wc_ack" style="width:22px;height:22px;flex:none;margin-top:2px"><span><b>This cannot be edited or undone.</b> I checked the rule, the limits and the second person's address. Only the wallet that creates this wallet can send from it.</span></label>
+<button class="cta" id="wc_go" disabled>Create wallet (your wallet will ask you to confirm)</button>
+<p id="wc_msg"></p></div></div>
 <h2>Rule lab</h2>
 <div class="card">
 <p class="note">Pick a rule to see what it does. Every rule is checked against all possible cases before it is locked.</p><label>Choose a rule<select id="tpl"></select></label><p id="blurb" style="font-size:15px;line-height:1.7"></p><div id="params"></div><p class="bad" id="error"></p>
@@ -134,7 +179,7 @@ footer{padding:20px 0 40px}
 </div></div>
 
 <div class="card dev-only"><b>Developer notes</b>
-<div class="kv" style="margin-top:8px"><b>Chain</b><span>X Layer, id 196</span><b>Processor</b><span>0x526b96238cc418d909005e2e2d79e327da4bd0f7 (TapeOut My 4004 #29)</span><b>Circuit</b><span>#6, 58 NAND gates, 17 in, 1 out</span><b>Circle</b><span>BylawCircle: ownerless, stores keccak256(netlist), rechecks on every payout, fee fixed at creation (max 1%)</span><b>Source</b><span><a href="https://github.com/cloverjat/bylaw">github.com/cloverjat/bylaw</a></span></div></div>
+<div class="kv" style="margin-top:8px"><b>Chain</b><span>X Layer, id 196</span><b>Processor</b><span>0x526b96238cc418d909005e2e2d79e327da4bd0f7 (TapeOut My 4004 #29)</span><b>Circuits</b><span>#6 circle (58 NAND), #7 payroll, #8 confirm-above, #9 trusted-or-small, #10 daily cap (wallet rules)</span><b>Circle</b><span>BylawCircle: ownerless, stores keccak256(netlist), rechecks on every payout, fee fixed at creation (max 1%)</span><b>Source</b><span><a href="https://github.com/cloverjat/bylaw">github.com/cloverjat/bylaw</a></span></div></div>
 
 <footer><p class="note">Experimental and unaudited. Use only money you can afford to lose. Not affiliated with OKX or TapeOut. The proof shows the circuit matches the rule you read; it cannot tell whether the rule is what you meant. Everything on a circle is public on the blockchain. Questions or problems: <a href="https://x.com/Bylawbuild" target="_blank" rel="noopener">@Bylawbuild on X</a>.</p></footer>
 </div>
