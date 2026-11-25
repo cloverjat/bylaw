@@ -6,7 +6,7 @@ import { FEE_WALLET, ESCROW_FEE_BPS } from './fees.mjs';
 export const ESCROW_DEFAULTS = {
   token: '0xB6CEceAB302E2E4948951eE7843FC24E92933061',
   processor: '0x526B96238cc418d909005e2E2D79e327da4BD0f7',
-  circuitId: null, // set to the TapeOut circuit number once docs/circuits/bylaw-escrow-rule.* is taped out on X Layer
+  circuitId: 11, // taped out on X Layer (My 4004 #29), circuit #11
   feeRecipient: FEE_WALLET,
   feeBps: ESCROW_FEE_BPS,
 };

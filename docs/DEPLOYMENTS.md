@@ -68,3 +68,5 @@ Wallet rule circuits on TapeOut My 4004 #29: #8 confirm big payments, #9 trusted
 Rule: 29 NAND gates, 9 inputs, 2 outputs, proven for all 512 inputs (docs/circuits/bylaw-escrow-rule.canvas.json).
 Contract: BylawEscrow (installments up to 24, once/weekly/biweekly/monthly, buyer approve, 3-day auto-release, hold + optional referee, seller can return a payment). Fee 1% locked once with the funds.
 The create button stays off until the circuit number is set in web/escrow.mjs (ESCROW_DEFAULTS.circuitId).
+
+Escrow rule taped out on X Layer: processor My 4004 #29 (0x526b96238cc418d909005e2e2d79e327da4bd0f7), **circuit #11**.
