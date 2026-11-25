@@ -194,6 +194,8 @@ contract BylawEscrow {
     /// @notice Anyone may ask for an installment to be paid to the seller. The circuit decides; it always goes to the seller.
     function release(uint256 k) external {
         if (k >= count) revert WrongOrder();
+        // If the seller has offered this installment back, the offer wins over an approval: the seller gave up the money.
+        if (sellerRefunds[k]) revert WrongOrder();
         if ((_eval(k) & 1) == 0) revert RuleSaysNo();
         settled[k] = true;
         require(token.transfer(seller, installment), "transfer failed");

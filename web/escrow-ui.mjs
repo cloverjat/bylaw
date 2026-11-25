@@ -3,6 +3,7 @@ import { remember } from './finder.mjs';
 import { ruleBadge, showBadge } from './official.mjs';
 import { verifyBox } from './verify.mjs';
 import { ESCROW_DEFAULTS, GRACE_DAYS, validateEscrow, scheduleOf, escrowTotals, escrowDeployData, escrowArgs, termsFingerprint, readEscrow, escrowActions, escrowAllowance } from './escrow.mjs';
+const esc = (s) => String(s).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
 const $ = (id) => document.getElementById(id);
 const qs = { get: (k) => new URLSearchParams(location.search).get(k) };
 let me = null, S = null;
@@ -102,7 +103,7 @@ async function load() {
   $('ec_rows').innerHTML = S.funded ? S.items.map((_, k) => rowFor(k)).join('') : '';
   if (ESCROW_DEFAULTS.circuitId != null) showBadge($('ebadge'), ruleBadge(S, ESCROW_DEFAULTS.circuitId, 'agreement'));
   $('ec_kv').innerHTML = verifyBox(escrowArgs(S), 'BylawEscrow.standard-input.json');
-  $('ec_facts').innerHTML = `Buyer ${short(S.buyer)} · seller ${short(S.seller)} · ${S.count} × ${usdc(S.installment)} USDC · <a href="${EXPLORER}/address/${c}" target="_blank" rel="noopener">view on explorer</a>`;
+  $('ec_facts').innerHTML = `Buyer ${short(S.buyer)} · seller ${short(S.seller)} · ${S.count} × ${usdc(S.installment)} USDC · <a href="${EXPLORER}/address/${esc(c)}" target="_blank" rel="noopener">view on explorer</a>`;
 }
 async function act(a, k) {
   const c = qs.get('escrow').toLowerCase();

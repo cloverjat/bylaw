@@ -5,6 +5,7 @@ import { payrollArgs, verifyBox } from './verify.mjs';
 import { validatePayroll, payrollTotals, payrollDeployData, readPayroll, payrollActions, payrollAllowance, RECLAIM_DELAY } from './payroll.mjs';
 const $ = (id) => document.getElementById(id);
 const qs = { get: (k) => new URLSearchParams(location.search).get(k) };
+const esc = (s) => String(s).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
 const NAMES = (qs.get('names') || '').split(',').map((x) => x.trim());
 let me = null, S = null;
 const unit = () => { const u = $('py_unit').selectedOptions[0].textContent; return Number($('py_per').value) === 1 ? u.replace(/s$/, '') : u; };
@@ -69,7 +70,7 @@ async function load() {
   $('pv_prog').textContent = S.funded ? `${done} of ${all} payments made` : 'Waiting for the employer to fund it';
   $('pv_list').innerHTML = S.workers.map((wk, i) => {
     const chips = S.paid.map((row, k) => (row[i] ? '✅' : S.funded && now() >= dueAt(k) ? '⏳ due' : '·')).join(' ');
-    return `<li><span><b>${NAMES[i] || 'Worker ' + (i + 1)}</b> (${short(wk)})<br><small>${usdc(S.amounts[i])} USDC per cycle</small></span><span>${chips}</span></li>`;
+    return `<li><span><b>${esc(NAMES[i] || 'Worker ' + (i + 1))}</b> (${short(wk)})<br><small>${usdc(S.amounts[i])} USDC per cycle</small></span><span>${chips}</span></li>`;
   }).join('');
   const mine = me && me === S.boss;
   let cta = { label: me ? 'Nothing to do right now' : 'Connect your wallet', act: me ? '' : 'connect', help: '' };
@@ -85,7 +86,7 @@ async function load() {
   $('pv_cta').textContent = cta.label; $('pv_cta').dataset.act = cta.act; $('pv_cta').disabled = !cta.act; $('pv_help').textContent = cta.help;
   showBadge($('pbadge'), ruleBadge(S, 7, 'payroll'));
   $('pv_kv').innerHTML = verifyBox(payrollArgs(S), 'BylawPayroll.standard-input.json');
-  $('pv_facts').innerHTML = `Employer ${short(S.boss)} · total ${usdc(S.total)} USDC · ${S.cycles} cycles of ${Math.round(S.period / 3600 * 100) / 100} hours · <a href="${EXPLORER}/address/${qs.get('payroll')}">view on explorer</a>`;
+  $('pv_facts').innerHTML = `Employer ${short(S.boss)} · total ${usdc(S.total)} USDC · ${S.cycles} cycles of ${Math.round(S.period / 3600 * 100) / 100} hours · <a href="${EXPLORER}/address/${esc(qs.get('payroll'))}">view on explorer</a>`;
 }
 $('pv_cta').addEventListener('click', async () => {
   const act = $('pv_cta').dataset.act, c = qs.get('payroll').toLowerCase();

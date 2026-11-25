@@ -155,3 +155,16 @@ test('fee: bounded at 1% and needs a recipient', async () => {
   await assert.rejects(mk(101, rec));                       // above 1%
   await assert.rejects(mk(10, ethers.ZeroAddress));         // a fee with nowhere to go
 });
+
+test('trusted or small: a long waiting time also delays trust (63 h wait means no unrestricted payment at 48 h)', async () => {
+  const { wallet, token, s, warp, addr } = await setup(2, 5, 63);
+  const w = wallet.connect(s[1]);
+  const to = await addr(4);
+  await (await w.saveRecipient(to)).wait();
+  await warp(49 * 3600);
+  await reverts(w.send(to, 60n * U));                   // 49 h: the old 48 h trust rule would have allowed this
+  await reverts(w.send(to, 1n * U));                    // and a small payment still has to wait the full 63 h
+  await warp(15 * 3600);                                // 64 h
+  await (await w.send(to, 60n * U)).wait();
+  assert.equal(await token.balanceOf(to), 60n * U);
+});

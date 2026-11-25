@@ -126,3 +126,18 @@ test('escrow: a single payment works too, the fee goes on top, bad parameters re
   await assert.rejects(f.deploy(z, z, 1, await s[2].getAddress(), z, 100n, 0n, 3600n, 0n, t, z, 0n)); // zero installments count
   await assert.rejects(f.deploy(z, z, 1, await s[1].getAddress(), z, 100n, 1n, 3600n, 0n, t, z, 0n)); // seller is the buyer
 });
+
+test('escrow: approval followed by a seller refund offer cannot be paid out, only returned; paid installments cannot be returned', async () => {
+  const a = await setup(); await a.ready();
+  await yes(a.esc.connect(a.buyer), 'approve', 0);
+  await yes(a.esc.connect(a.seller), 'offerRefund', 0);
+  await no(a.esc.connect(a.s[5]), 'release', 0);   // the refund offer wins over the approval
+  const before = await a.token.balanceOf(await a.buyer.getAddress());
+  await yes(a.esc.connect(a.s[5]), 'refund', 0);
+  assert.equal((await a.token.balanceOf(await a.buyer.getAddress())) - before, 100n);
+  const b = await setup(); await b.ready();
+  await b.warp(3600 + 3600 * 24 * 3);              // auto-release window passed
+  await yes(b.esc.connect(b.s[5]), 'release', 0);
+  await no(b.esc.connect(b.seller), 'offerRefund', 0); // already paid
+  await no(b.esc.connect(b.s[5]), 'refund', 0);
+});

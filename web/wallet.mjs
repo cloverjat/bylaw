@@ -57,7 +57,7 @@ export function validateWallet({ kind, unitUsdc, limitA, limitB, confirmer, owne
 export function walletSentence({ kind, unitUsdc, limitA, limitB, confirmer, feeBps }) {
   const cap = limitA * unitUsdc;
   if (kind === 1) return `This wallet can send at most ${cap} USDC a day, in total. Any payment that would go over is refused, even if the owner's key is stolen. Amounts are counted in steps of ${unitUsdc} USDC and rounded up.`;
-  if (kind === 2) return `A saved recipient becomes trusted after 2 days and can be paid any amount. A brand-new recipient can get at most ${cap} USDC, and only after ${limitB} hour${limitB === 1 ? '' : 's'} have passed since you saved them. Amounts are counted in steps of ${unitUsdc} USDC and rounded up.`;
+  if (kind === 2) return `A saved recipient becomes trusted after 2 days (or after the waiting time, if that is longer) and can be paid any amount. A brand-new recipient can get at most ${cap} USDC, and only after ${limitB} hour${limitB === 1 ? '' : 's'} have passed since you saved them. Amounts are counted in steps of ${unitUsdc} USDC and rounded up.`;
   return `Payments up to ${cap} USDC go straight through. Anything above that needs ${confirmer ? confirmer.slice(0, 6) + '…' + confirmer.slice(-4) : 'a second person'} to confirm it first. Amounts are counted in steps of ${unitUsdc} USDC and rounded up.`;
 }
 export function walletDeployData({ kind, unitUsdc, limitA, limitB, confirmer }) {

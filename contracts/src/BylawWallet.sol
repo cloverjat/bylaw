@@ -136,7 +136,8 @@ contract BylawWallet {
             spentToday = spent + amount;
         } else if (kind == 2) {
             uint256 ts = addedAt[to];
-            bool trusted = ts != 0 && block.timestamp >= ts + TRUST_DELAY;
+            uint256 delay = limitB * 1 hours > TRUST_DELAY ? limitB * 1 hours : TRUST_DELAY; // never trusted sooner than the waiting time
+            bool trusted = ts != 0 && block.timestamp >= ts + delay;
             uint256 age = ts == 0 ? 0 : (block.timestamp - ts) / 1 hours;
             if (age > MAX_UNITS) age = MAX_UNITS;
             _ask((trusted ? 1 : 0) | (a << 1) | (age << 7) | (limitA << 13) | (limitB << 19), 25);
@@ -146,7 +147,7 @@ contract BylawWallet {
         _pay(to, amount);
     }
 
-    /// @notice Kind 2: save a recipient. It counts as trusted after TRUST_DELAY, and its waiting time starts now.
+    /// @notice Kind 2: save a recipient. It counts as trusted after TRUST_DELAY (or the waiting time, if that is longer), and its waiting time starts now.
     function saveRecipient(address to) external onlyOwner {
         if (kind != 2) revert WrongKind();
         if (to == address(0)) revert BadParams();

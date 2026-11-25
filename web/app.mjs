@@ -64,6 +64,7 @@ $('caddr').value = new URLSearchParams(location.search).get('circle') || '';
 if ($('caddr').value) { $('circleCard').hidden = false; $('circleHead').hidden = false; }
 const say = (m, cls = '') => { $('cmsg').textContent = m; $('cmsg').className = cls; };
 const NAMES = (new URLSearchParams(location.search).get('names') || '').split(',').map((x) => x.trim());
+const esc = (s) => String(s).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
 const who = (m, i) => { const nm = NAMES[i] || 'Member ' + (i + 1); return (me === m ? 'You, ' + nm : nm) + ' (' + short(m) + ')'; };
 
 const GRACE = 7 * 86400;
@@ -107,14 +108,14 @@ async function refresh() {
   $('clist').innerHTML = s.members.map((m, i) => {
     const p = done || i < s.round ? '<span class="pill g">got their turn</span>' : i === s.round ? '<span class="pill y">gets this round</span>' : '';
     const q = done ? '' : s.paid[i] ? '<span class="pill g">paid</span>' : '<span class="pill">not paid yet</span>';
-    return `<li><span>${who(m, i)}</span><span>${p} ${q}</span></li>`;
+    return `<li><span>${esc(who(m, i))}</span><span>${p} ${q}</span></li>`;
   }).join('');
   const left = s.roundEnd - s.now;
   $('cfacts').innerHTML = `Each member pays ${usdc(s.contribution)} USDC a round. Held in the circle now: ${usdc(s.balance)} USDC. ` +
     (done || s.failed ? '' : left > 0 ? `This round's time ends in about ${Math.ceil(left / 60)} min.` : 'This round\'s time is over.') +
-    ` <a href="${EXPLORER}/address/${c}" target="_blank" rel="noopener">View on the blockchain explorer</a>`;
+    ` <a href="${EXPLORER}/address/${esc(c)}" target="_blank" rel="noopener">View on the blockchain explorer</a>`;
   showBadge($('cbadge'), ruleBadge(s, 6, 'circle'));
-  $('ckv').innerHTML = `<b>Circle</b><span>${c}</span><b>Token</b><span>${s.token}</span><b>Circuit</b><span>#${s.circuitId} on ${s.processor}</span><b>Netlist hash</b><span>${s.netlistHash}</span><b>Fee</b><span>${s.feeBps} bps to ${s.feeRecipient}</span><b>Round</b><span>${s.round} (paidCount ${s.paidCount})</span>` + verifyBox(circleArgs(s), 'BylawCircle-v2.standard-input.json (circles made after 25 Nov 2026) or BylawCircle.standard-input.json (earlier)');
+  $('ckv').innerHTML = `<b>Circle</b><span>${esc(c)}</span><b>Token</b><span>${s.token}</span><b>Circuit</b><span>#${s.circuitId} on ${s.processor}</span><b>Netlist hash</b><span>${s.netlistHash}</span><b>Fee</b><span>${s.feeBps} bps to ${s.feeRecipient}</span><b>Round</b><span>${s.round} (paidCount ${s.paidCount})</span>` + verifyBox(circleArgs(s), 'BylawCircle-v2.standard-input.json (circles made after 25 Nov 2026) or BylawCircle.standard-input.json (earlier)');
   const n = nextStep();
   $('cta').disabled = !n || !n.act;
   $('cta').textContent = n ? n.label : done ? 'All done' : 'Closed';

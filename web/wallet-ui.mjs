@@ -15,7 +15,7 @@ const caddr = () => (qs.get('wallet') || '').toLowerCase();
 // ---- create ----
 const CHOICES = {
   1: { a: 'Daily cap (in steps)', aDef: 50, help: 'The most this wallet can send in one day, in total.' },
-  2: { a: 'Most a brand-new recipient can get (in steps)', aDef: 5, help: 'Saved recipients become trusted after 2 days. Until then, and for new ones, this is the limit.' },
+  2: { a: 'Most a brand-new recipient can get (in steps)', aDef: 5, help: 'Saved recipients become trusted after 2 days, or after the waiting time if that is longer. Until then, and for new ones, this is the limit.' },
   3: { a: 'Payments up to this go straight through (in steps)', aDef: 20, help: 'Anything above this needs the second person.' },
 };
 const kindNow = () => Number($('wc_kind').value);
@@ -91,9 +91,9 @@ async function load() {
   let line = 'Owner ' + short(W.owner) + (mine ? ' (you)' : '');
   if (W.kind === 1) line += ` · spent today ${usdc(W.spent)} of ${cap} USDC (the day resets at midnight UTC)`;
   if (W.kind === 3) line += ` · second person ${short(W.confirmer)}`;
-  $('wl_facts').innerHTML = esc(line) + ` · <a href="${EXPLORER}/address/${c}" target="_blank" rel="noopener">view on explorer</a>`;
+  $('wl_facts').innerHTML = esc(line) + ` · <a href="${EXPLORER}/address/${esc(c)}" target="_blank" rel="noopener">view on explorer</a>`;
   showBadge($('wl_badge'), ruleBadge(W, WALLET_CIRCUITS[W.kind], 'wallet'));
-  $('wl_kv').innerHTML = `<b>Wallet</b><span>${c}</span><b>Token</b><span>${W.token}</span><b>Circuit</b><span>#${W.circuitId} on ${W.processor}</span><b>Netlist hash</b><span>${W.netlistHash}</span><b>Kind</b><span>${W.kind} (step ${st} USDC, limit A ${W.limitA}, limit B ${W.limitB})</span>` + verifyBox(walletArgs(W), 'BylawWallet.standard-input.json');
+  $('wl_kv').innerHTML = `<b>Wallet</b><span>${esc(c)}</span><b>Token</b><span>${W.token}</span><b>Circuit</b><span>#${W.circuitId} on ${W.processor}</span><b>Netlist hash</b><span>${W.netlistHash}</span><b>Kind</b><span>${W.kind} (step ${st} USDC, limit A ${W.limitA}, limit B ${W.limitB})</span>` + verifyBox(walletArgs(W), 'BylawWallet.standard-input.json');
   $('wl_conn').hidden = !!me;
   $('wl_dep').hidden = !me;
   $('wl_own').hidden = !mine;
