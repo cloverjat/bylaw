@@ -55,7 +55,7 @@ let me = null, state = null, allowance = 0;
 const setMode = (dev) => { document.body.classList.toggle('dev', dev); $('m_dev').classList.toggle('on', dev); $('m_simple').classList.toggle('on', !dev); };
 $('m_simple').addEventListener('click', () => setMode(false));
 $('m_dev').addEventListener('click', () => setMode(true));
-if (!wallet()) { $('nowallet').hidden = false; $('okxopen').href = 'https://www.okx.com/download?deeplink=' + encodeURIComponent('okx://wallet/dapp/url?dappUrl=' + encodeURIComponent(location.href)); }
+
 $('caddr').value = new URLSearchParams(location.search).get('circle') || '';
 if ($('caddr').value) { $('circleCard').hidden = false; $('circleHead').hidden = false; }
 const say = (m, cls = '') => { $('cmsg').textContent = m; $('cmsg').className = cls; };
@@ -122,7 +122,6 @@ async function refresh() {
 }
 async function act(name) {
   try {
-    if (name === 'connect' && !wallet()) { const u = 'https://www.okx.com/download?deeplink=' + encodeURIComponent('okx://wallet/dapp/url?dappUrl=' + encodeURIComponent(location.href)); $('cmsg').innerHTML = 'This browser has no wallet. <a href="' + u + '">Tap here to open this page inside the OKX app</a>, then press Connect again. You can still look at any circle without connecting.'; $('cmsg').className = 'err'; return; }
     if (name === 'connect') { me = await connect(); $('me').textContent = ' Connected: ' + short(me); await refresh(); return; }
     const c = $('caddr').value.trim().toLowerCase();
     say('Check your wallet and read the popup before you confirm...');

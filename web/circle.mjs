@@ -1,4 +1,5 @@
 // Live Bylaw Circle dashboard: reads X Layer directly, sends transactions from the user's own wallet.
+import { chooseWallet } from './wallets.mjs';
 const RPCS = ['https://rpc.xlayer.tech', 'https://xlayerrpc.okx.com'];
 const CHAIN_HEX = '0xc4';
 const EXPLORER = 'https://www.okx.com/web3/explorer/xlayer';
@@ -60,11 +61,13 @@ export async function readCircle(c) {
   };
 }
 
-export function wallet() { return window.okxwallet || window.ethereum; }
+let active = null;
+export function wallet() { return active || window.okxwallet || window.ethereum; }
 
 export async function connect() {
-  const w = wallet();
-  if (!w) throw new Error('No wallet found. Open this page in a browser with the OKX Wallet extension, or in the OKX app browser.');
+  const w = await chooseWallet();
+  if (!w) throw new Error('No wallet connected. Pick a wallet, or open this page inside your wallet app.');
+  active = w;
   const [account] = await w.request({ method: 'eth_requestAccounts' });
   const chain = await w.request({ method: 'eth_chainId' });
   if (chain !== CHAIN_HEX) {
