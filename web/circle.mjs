@@ -1,5 +1,5 @@
 // Live Bylaw Circle dashboard: reads X Layer directly, sends transactions from the user's own wallet.
-const RPC = 'https://rpc.xlayer.tech';
+const RPCS = ['https://rpc.xlayer.tech', 'https://xlayerrpc.okx.com'];
 const CHAIN_HEX = '0xc4';
 const EXPLORER = 'https://www.okx.com/web3/explorer/xlayer';
 export const DEMO_CIRCLE = '0x8d15e0ec20b56ccac0afe59fab188d0b72d2a3f5';
@@ -27,10 +27,16 @@ const short = (a) => a.slice(0, 6) + '…' + a.slice(-4);
 const usdc = (n) => (n / 1e6).toLocaleString(undefined, { maximumFractionDigits: 6 });
 
 async function rpc(method, params) {
-  const r = await fetch(RPC, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) });
-  const j = await r.json();
-  if (j.error) { const e = new Error(j.error.message); e.data = j.error.data; throw e; }
-  return j.result;
+  let last;
+  for (const url of RPCS) {
+    try {
+      const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) });
+      const j = await r.json();
+      if (j.error) { const e = new Error(j.error.message); e.data = j.error.data; e.fromChain = true; throw e; }
+      return j.result;
+    } catch (e) { if (e.fromChain) throw e; last = e; } // network or rate-limit problem: try the next server
+  }
+  throw last;
 }
 const call = (to, data) => rpc('eth_call', [{ to, data }, 'latest']);
 
