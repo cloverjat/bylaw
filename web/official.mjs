@@ -16,6 +16,6 @@ export function ruleBadge(s, circuitId, what) {
 }
 export function showBadge(el, b) {
   el.hidden = false;
-  el.style.cssText = 'padding:10px 12px;border-radius:10px;font-size:14px;line-height:1.45;margin:10px 0;border:2px solid ' + (b.ok ? '#2e9d5b;background:#eefaf2' : '#d33;background:#fff0f0;font-size:16px');
+  el.style.cssText = 'color:#111;padding:10px 12px;border-radius:10px;font-size:14px;line-height:1.45;margin:10px 0;border:2px solid ' + (b.ok ? '#2e9d5b;background:#eefaf2' : '#d33;background:#fff0f0;font-size:16px');
   el.innerHTML = b.html;
 }
