@@ -49,6 +49,8 @@ run();
 // ---- Live circle dashboard ----
 import { DEMO_CIRCLE, wallet, readCircle, connect, actions, waitFor, allowanceOf, short, usdc, EXPLORER, deployCircle, waitReceipt } from './circle.mjs';
 import { validate, deployData } from './create.mjs';
+import { initI18n } from './i18n.mjs';
+import './splash.mjs';
 import { remember, renderFinder } from './finder.mjs';
 import { ruleBadge, showBadge } from './official.mjs';
 import { circleArgs, verifyBox } from './verify.mjs';
@@ -196,3 +198,5 @@ const navBtn = $('navconn');
 const showAcct = (a) => { navBtn.textContent = a ? short(a) : 'Connect wallet'; navBtn.classList.toggle('on', !!a); };
 window.addEventListener('bylaw:account', (e) => showAcct(e.detail));
 navBtn.addEventListener('click', async () => { try { showAcct(await connect()); } catch (e) { navBtn.textContent = 'Connect wallet'; alert(e.message || 'Could not connect.'); } });
+
+initI18n();
