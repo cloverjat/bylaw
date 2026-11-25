@@ -11,6 +11,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@walletconnect/ethereum-provider": "2.23.9",
     "esbuild": "^0.28.2"
   }
 }

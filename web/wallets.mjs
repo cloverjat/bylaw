@@ -22,6 +22,19 @@ function detect() {
   return [...found.values()];
 }
 
+// WalletConnect lets any wallet app connect by QR code or link. The project ID is public by design.
+const WC_PROJECT_ID = '3857f537a0583901b89d805c18e22d18';
+const WC_RPC = 'https://rpc.xlayer.tech';
+function loadWC() {
+  if (window.__bylawWC) return Promise.resolve();
+  return new Promise((res, rej) => {
+    const s = document.createElement('script'); s.src = '/wc.js';
+    s.onload = res; s.onerror = () => rej(new Error('Could not load WalletConnect. Check your connection and try again.'));
+    document.head.appendChild(s);
+  });
+}
+async function walletConnectProvider() { await loadWC(); return window.__bylawWC(WC_PROJECT_ID, WC_RPC); }
+
 const here = () => location.href;
 const enc = encodeURIComponent;
 const APPS = [
@@ -52,24 +65,33 @@ const rowStyle = 'display:flex;align-items:center;gap:10px;width:100%;padding:12
 export async function chooseWallet() {
   let list = detect();
   if (!list.length) { await new Promise((r) => setTimeout(r, 400)); list = detect(); } // some wallets announce late
-  if (list.length === 1) return list[0].provider;
-  if (list.length > 1) {
-    return modal('Choose your wallet', (box, done) => {
+  const wcRow = (box, done) => {
+    const b = document.createElement('button'); b.style.cssText = rowStyle;
+    b.textContent = 'Other wallets (WalletConnect)';
+    b.onclick = () => done({ walletconnect: true }); box.appendChild(b);
+  };
+  if (list.length) {
+    const pick = await modal('Choose your wallet', (box, done) => {
       for (const w of list) {
         const b = document.createElement('button'); b.style.cssText = rowStyle;
         if (w.icon) { const i = document.createElement('img'); i.src = w.icon; i.width = 28; i.height = 28; b.appendChild(i); }
         b.appendChild(document.createTextNode(w.name)); b.onclick = () => done(w.provider); box.appendChild(b);
       }
+      wcRow(box, done);
     });
+    if (pick && pick.walletconnect) return walletConnectProvider();
+    return pick;
   }
   // No wallet in this browser: open the page inside a wallet app.
-  await modal('No wallet in this browser', (box, done) => {
-    const p = document.createElement('div'); p.style.marginBottom = '6px';
-    p.textContent = 'Open this page inside your wallet app, then press Connect again. Or install a wallet extension on your computer.'; box.appendChild(p);
+  const pick = await modal('Connect a wallet', (box, done) => {
+    wcRow(box, done);
+    const p = document.createElement('div'); p.style.margin = '10px 0 6px';
+    p.textContent = 'Or open this page inside your wallet app, then press Connect again.'; box.appendChild(p);
     for (const a of APPS) { const l = document.createElement('a'); l.href = a.url(); l.style.cssText = rowStyle; l.textContent = 'Open in ' + a.name; box.appendChild(l); }
     const c = document.createElement('button'); c.style.cssText = rowStyle; c.textContent = 'Copy page link';
     c.onclick = async () => { try { await navigator.clipboard.writeText(here()); c.textContent = 'Link copied'; } catch { c.textContent = here(); } };
     box.appendChild(c);
   });
+  if (pick && pick.walletconnect) return walletConnectProvider();
   return null;
 }
