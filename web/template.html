@@ -47,6 +47,9 @@ nav{background:rgba(7,18,13,.85);backdrop-filter:blur(8px);position:sticky;top:0
 .hero p{font-size:18px;color:var(--mut);max-width:560px;margin:0 0 20px}
 .hero .cta2{display:inline-block;background:var(--mint);color:#04140b;font-weight:800;border-radius:999px;padding:12px 22px;text-decoration:none;margin-right:8px}
 .hero .cta3{display:inline-block;border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:12px 22px;text-decoration:none;background:var(--card)}
+.herologo{font-size:22px;font-weight:800;color:#fff;margin:0 0 14px;letter-spacing:-.3px}.herologo span{color:var(--mint)}.heronote{font-size:14px!important;margin:18px 0 0!important}
+.ex{padding:4px 18px}.ex details{margin:0}.ex summary{font-size:17px;color:#fff;padding:12px 0}.ex p{color:var(--mut);margin:0 0 10px}.ex .cta3{margin-bottom:14px}
+.sm{padding:9px 16px!important;font-size:15px;margin:0 8px 8px 0}.built .cta2{color:#04140b}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:26px 0 4px}
 .tile{display:block;text-decoration:none;color:var(--ink);background:linear-gradient(160deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:16px;padding:16px;transition:.15s}
 .tile:hover{border-color:var(--mint);transform:translateY(-2px)}
@@ -110,16 +113,11 @@ footer{padding:20px 0 40px}
 <a data-view="lab"><i>&lt;/&gt;</i>Rule Lab</a>
 </aside>
 <div class="hero"><div class="wrap">
+<div class="herologo">By<span>law</span></div>
 <h1>Rules your money <span>can't break.</span></h1>
 <p>Save, pay and split money with rules locked on the blockchain. No middleman. No cheating. Not the organizer, not even us.</p>
 <a class="cta2" data-view="wallet" href="#walCreate">Create a rule &rarr;</a><a class="cta3" data-view="lab" href="#tpl">Explore the rules</a>
-<div class="tiles">
-<a class="tile" data-view="circle" href="#createCard"><i>&#128101;</i><b>Savings Circle</b><small>Save together</small></a>
-<a class="tile" data-view="payroll" href="#payCreate"><i>&#128197;</i><b>Payroll</b><small>Automate payments</small></a>
-<a class="tile" data-view="escrow" href="#escCreate"><i>&#129309;</i><b>Escrow</b><small>Safe deals and contracts</small></a>
-<a class="tile" data-view="wallet" href="#walCreate"><i>&#128091;</i><b>Bylaw Wallet</b><small>Rule-based wallet</small></a>
-<a class="tile" data-view="lab" href="#tpl"><i>&lt;/&gt;</i><b>Rule Lab</b><small>See how rules work</small></a>
-</div></div></div>
+<p class="heronote">Live on X Layer mainnet. Open source. Every rule is checked again each time money moves.</p></div></div>
 <div class="wrap">
 <h2>How it works</h2>
 <div class="steps">
@@ -139,6 +137,21 @@ footer{padding:20px 0 40px}
 <dt>Gas (OKB)</dt><dd>A small network fee, paid in OKB, to record something on X Layer.</dd>
 <dt>Wallet address</dt><dd>Your public account number. It starts with 0x. Anyone can send money to it, but only you can spend from it.</dd>
 </dl></details></div>
+<h2>What you can do with Bylaw</h2>
+<p class="note">Tap one to read how it works. You do not need to leave this page.</p>
+<div class="card ex"><details><summary>Savings Circle</summary><p>A group saves together. Everyone pays the same amount each round, and the whole pot goes to one member per round, in turn. The order and amounts are fixed when the circle is created, so the organizer cannot take the pot or change who is next. Fee: 1% of each payout.</p><a class="cta3 sm" data-view="circle" href="#createCard">Open Savings Circle &rarr;</a></details></div>
+<div class="card ex"><details><summary>Payroll</summary><p>Lock the pay for a team once. At the end of each cycle the rule releases every worker's share automatically, and no one can redirect it. Good for creators, contractors and small teams who want proof that pay will arrive. Fee: 1%.</p><a class="cta3 sm" data-view="payroll" href="#payCreate">Open Payroll &rarr;</a></details></div>
+<div class="card ex"><details><summary>Escrow</summary><p>For hiring someone or buying something. The buyer locks the full amount once, and it is paid in installments by a public rule: when the buyer approves each one, or automatically 3 days after it is due. An optional referee can hold a payment if there is a dispute. Fee: 1%.</p><a class="cta3 sm" data-view="escrow" href="#escCreate">Open Escrow &rarr;</a></details></div>
+<div class="card ex"><details><summary>Bylaw Wallet</summary><p>A wallet with rules you set yourself: a daily spending cap, confirmation above a certain amount, and a trusted list of recipients. New recipients wait before they can receive large payments, so a stolen key cannot empty it in one go. Fee: 0.1% on sends.</p><a class="cta3 sm" data-view="wallet" href="#walCreate">Open Bylaw Wallet &rarr;</a></details></div>
+<div class="card ex"><details><summary>Rule Lab</summary><p>See how a rule is built from tiny logic gates, test it against every possible case, and read the same rule in plain words. This is the place to learn how Bylaw works.</p><a class="cta3 sm" data-view="lab" href="#tpl">Open Rule Lab &rarr;</a></details></div>
+<h2>Questions people ask</h2>
+<div class="card ex"><details><summary>Is my money safe?</summary><p>Your money sits in a contract on X Layer, not with us. The rule is locked and is checked again on every payment. Bylaw is still experimental and unaudited, so start with a small amount.</p></details></div>
+<div class="card ex"><details><summary>Who holds the money?</summary><p>The contract does. Nobody at Bylaw can move it, pause it or change the rule. The organizer of a circle cannot take the pot either.</p></details></div>
+<div class="card ex"><details><summary>Can a rule be changed after it is created?</summary><p>No. Once a rule is locked, nobody can edit it. If something needs to change, you create a new one.</p></details></div>
+<div class="card ex"><details><summary>What does it cost?</summary><p>Circles, payroll and escrow take a 1% fee. Wallet sends take 0.1%. You also pay a small network fee in OKB each time something is recorded on X Layer.</p></details></div>
+<div class="card ex"><details><summary>What do I need to use it?</summary><p>A crypto wallet (such as OKX Wallet or MetaMask), some USDC on X Layer, and a little OKB for network fees.</p></details></div>
+<div class="card ex"><details><summary>What is TapeOut?</summary><p>TapeOut is the rule processor on X Layer. Each Bylaw rule is a small logic circuit stored there, and the contracts ask it for the answer before any money moves.</p></details></div>
+<div class="card ex"><details><summary>Can I read the code?</summary><p>Yes. Everything is open source on GitHub, and the contract code can be checked against what is live.</p></details></div>
 <h2>Find your circle or payroll</h2>
 <div class="card" id="finder">
 <p class="note">Paste the address or link someone shared with you. Your own circles and payrolls on this device are listed below.</p>
@@ -147,6 +160,9 @@ footer{padding:20px 0 40px}
 <ul class="members" id="fd_list"></ul>
 <p class="note" id="fd_empty">Nothing here yet. Create a circle or a payroll below, or <a href="?circle=0x8d15e0ec20b56ccac0afe59fab188d0b72d2a3f5&names=Clover%2CTobi%2CBriggs&name=Example%20circle">look at a finished example</a>.</p>
 </div>
+<h2>Built on X Layer</h2>
+<div class="card built"><p>Bylaw is an open project built for the OKX Build X hackathon. Follow the build, ask questions or report a problem on X.</p>
+<a class="cta2 sm" href="https://x.com/Bylawbuild" target="_blank" rel="noopener">Follow @Bylawbuild</a><a class="cta3 sm" href="https://github.com/cloverjat/bylaw" target="_blank" rel="noopener">Source code</a><a class="cta3 sm" href="https://github.com/cloverjat/bylaw/blob/main/docs/LITEPAPER.md" target="_blank" rel="noopener">Read the rules</a></div>
 <h2 id="circleHead" hidden>Savings circle</h2>
 <div class="card" id="circleCard" hidden>
 <p class="note simple-only">A real circle, running right now with real (tiny) amounts. Everyone pays in each round, and the rule decides who gets the pot.</p>

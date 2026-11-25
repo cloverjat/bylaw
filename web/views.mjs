@@ -1,5 +1,5 @@
 // Left-hand menu: each tool gets its own page-like view instead of one long scroll.
-const ORDER = ['home', 'home', 'circle', 'circle', 'payroll', 'escrow', 'wallet', 'wallet', 'lab'];
+const ORDER = ['home', 'home', 'home', 'home', 'home', 'circle', 'circle', 'payroll', 'escrow', 'wallet', 'wallet', 'lab'];
 const NAMES = ['home', 'circle', 'payroll', 'escrow', 'wallet', 'lab'];
 
 export function initViews() {
