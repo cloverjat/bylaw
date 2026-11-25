@@ -1,13 +1,14 @@
 // Bylaw Payroll: create, fund, pay, read. Everything runs in the browser against X Layer.
 import { PAYROLL_BYTECODE } from './payroll-bytecode.mjs';
 import { call, send, pad, num, addr, ERRORS } from './circle.mjs';
+import { FEE_WALLET, PAYROLL_FEE_BPS } from './fees.mjs';
 
 export const PAY_DEFAULTS = {
   token: '0xB6CEceAB302E2E4948951eE7843FC24E92933061',
   processor: '0x526B96238cc418d909005e2E2D79e327da4BD0f7',
   circuitId: 7,
-  feeRecipient: '0x11BccB28A40ee64EA0eebC3199b9B00D5359e7de',
-  feeBps: 100,
+  feeRecipient: FEE_WALLET,
+  feeBps: PAYROLL_FEE_BPS,
 };
 const S = {
   workerCount: '0xf7a94f4b', workers: '0xf1a22dc2', amounts: '0x45f0a44f', total: '0x2ddbd13a', paidOut: '0x5c76ca2d', start: '0xbe9a6555',

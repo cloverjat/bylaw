@@ -7,6 +7,10 @@ import { ethers } from 'ethers';
 globalThis.window = { addEventListener() {}, dispatchEvent() {}, removeEventListener() {} };
 globalThis.CustomEvent = class { constructor(t) { this.type = t; } };
 const { WALLET_BYTECODE } = await import('../../web/wallet-bytecode.mjs');
+const { FEE_WALLET, OLD_FEE_WALLET, CIRCLE_FEE_BPS, PAYROLL_FEE_BPS, WALLET_FEE_BPS } = await import('../../web/fees.mjs');
+const { ruleBadge } = await import('../../web/official.mjs');
+const { DEFAULTS: CIRCLE_DEFAULTS } = await import('../../web/create.mjs');
+const { PAY_DEFAULTS } = await import('../../web/payroll.mjs');
 const { walletDeployData, walletActions, validateWallet, walletSentence, WALLET_CIRCUITS, WALLET_DEFAULTS, unitsOf, toBase } = await import('../../web/wallet.mjs');
 
 const abi = JSON.parse(fs.readFileSync(new URL('../out/BylawWallet.json', import.meta.url))).abi;
@@ -34,7 +38,7 @@ for (const [kind, f] of [[1, { limitA: 50, limitB: 0 }], [2, { limitA: 5, limitB
     const form = { kind, unitUsdc: 10, ...f };
     const data = walletDeployData(form);
     assert.ok(data.startsWith(WALLET_BYTECODE));
-    const args = ethers.AbiCoder.defaultAbiCoder().decode(['address', 'address', 'uint256', 'uint8', 'uint256', 'uint256', 'uint256', 'address'], '0x' + data.slice(WALLET_BYTECODE.length));
+    const args = ethers.AbiCoder.defaultAbiCoder().decode(['address', 'address', 'uint256', 'uint8', 'uint256', 'uint256', 'uint256', 'address', 'address', 'uint256'], '0x' + data.slice(WALLET_BYTECODE.length));
     assert.equal(args[0].toLowerCase(), WALLET_DEFAULTS.token.toLowerCase());
     assert.equal(args[1].toLowerCase(), WALLET_DEFAULTS.processor.toLowerCase());
     assert.equal(Number(args[2]), WALLET_CIRCUITS[kind]);
@@ -43,6 +47,8 @@ for (const [kind, f] of [[1, { limitA: 50, limitB: 0 }], [2, { limitA: 5, limitB
     assert.equal(Number(args[5]), f.limitA);
     assert.equal(Number(args[6]), f.limitB);
     assert.equal(args[7].toLowerCase(), kind === 3 ? CONF : ethers.ZeroAddress);
+    assert.equal(args[8].toLowerCase(), FEE_WALLET);
+    assert.equal(Number(args[9]), 10);
   });
 }
 
@@ -93,4 +99,21 @@ test('form checks catch bad input', () => {
   assert.ok(validateWallet({ ...ok, kind: 3, confirmer: CONF, owner: CONF }));
   assert.equal(validateWallet({ ...ok, kind: 3, confirmer: CONF, owner: ME }), null);
   assert.match(walletSentence({ kind: 1, unitUsdc: 5, limitA: 10 }), /50 USDC a day/);
+});
+
+test('fees: new circles, payrolls and wallets pay the new revenue wallet at the agreed rates', () => {
+  assert.equal(FEE_WALLET, '0x84bd6e322833ceba08fa5130580d5b1f2fb406e9');
+  assert.equal(CIRCLE_DEFAULTS.feeRecipient.toLowerCase(), FEE_WALLET);
+  assert.equal(PAY_DEFAULTS.feeRecipient.toLowerCase(), FEE_WALLET);
+  assert.equal(WALLET_DEFAULTS.feeRecipient.toLowerCase(), FEE_WALLET);
+  assert.deepEqual([CIRCLE_DEFAULTS.feeBps, PAY_DEFAULTS.feeBps, WALLET_DEFAULTS.feeBps], [100, 100, 10]);
+  assert.deepEqual([CIRCLE_FEE_BPS, PAYROLL_FEE_BPS, WALLET_FEE_BPS], [100, 100, 10]);
+});
+
+test('official badge: accepts the new and the old fee wallet, flags any other', () => {
+  const base = { processor: WALLET_DEFAULTS.processor, circuitId: 10, token: WALLET_DEFAULTS.token, feeBps: 10 };
+  assert.equal(ruleBadge({ ...base, feeRecipient: FEE_WALLET }, 10, 'wallet').ok, true);
+  assert.equal(ruleBadge({ ...base, feeRecipient: OLD_FEE_WALLET }, 10, 'wallet').ok, true);
+  assert.equal(ruleBadge({ ...base, feeRecipient: '0x' + '22'.repeat(20) }, 10, 'wallet').ok, false);
+  assert.equal(ruleBadge({ ...base, circuitId: 9, feeRecipient: FEE_WALLET }, 10, 'wallet').ok, false);
 });

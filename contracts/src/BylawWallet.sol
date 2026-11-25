@@ -22,6 +22,7 @@ contract BylawWallet {
     uint256 public constant EVAL_GAS = 3_000_000;
     uint256 public constant TRUST_DELAY = 2 days; // a saved recipient becomes "trusted" this long after it was saved
     uint256 public constant MAX_UNITS = 63;
+    uint256 public constant MAX_FEE_BPS = 100; // the fee can never be set above 1%
 
     IERC20W public immutable token;
     ITapeOutProcessorW public immutable processor;
@@ -33,6 +34,8 @@ contract BylawWallet {
     uint256 public immutable limitA;  // kind 1: daily cap, 2: max to a new recipient, 3: confirmation limit (in units)
     uint256 public immutable limitB;  // kind 2: waiting hours for a new recipient
     address public immutable confirmer; // kind 3: the second person
+    address public immutable feeRecipient; // Bylaw's fee wallet, fixed at creation
+    uint256 public immutable feeBps;       // fee added on top of each payment, fixed at creation (10 = 0.1%)
 
     // kind 1
     uint256 public lastDay;
@@ -44,6 +47,7 @@ contract BylawWallet {
     Proposal[] public proposals;
 
     event Sent(address indexed to, uint256 amount);
+    event FeePaid(address indexed feeRecipient, uint256 amount);
     event RecipientSaved(address indexed to, uint256 savedAt);
     event Proposed(uint256 indexed id, address indexed to, uint256 amount);
     event Confirmed(uint256 indexed id);
@@ -62,9 +66,11 @@ contract BylawWallet {
 
     constructor(
         IERC20W token_, ITapeOutProcessorW processor_, uint256 circuitId_,
-        uint8 kind_, uint256 unit_, uint256 limitA_, uint256 limitB_, address confirmer_
+        uint8 kind_, uint256 unit_, uint256 limitA_, uint256 limitB_, address confirmer_,
+        address feeRecipient_, uint256 feeBps_
     ) {
         if (kind_ < 1 || kind_ > 3 || unit_ == 0 || limitA_ > MAX_UNITS || limitB_ > MAX_UNITS) revert BadParams();
+        if (feeBps_ > MAX_FEE_BPS || (feeBps_ > 0 && feeRecipient_ == address(0))) revert BadParams();
         if (kind_ == 3 && (confirmer_ == address(0) || confirmer_ == msg.sender)) revert BadParams();
         token = token_;
         processor = processor_;
@@ -76,6 +82,8 @@ contract BylawWallet {
         limitA = limitA_;
         limitB = limitB_;
         confirmer = kind_ == 3 ? confirmer_ : address(0);
+        feeRecipient = feeRecipient_;
+        feeBps = feeBps_;
     }
 
     modifier onlyOwner() { if (msg.sender != owner) revert NotOwner(); _; }
@@ -99,9 +107,15 @@ contract BylawWallet {
         if (out.length != 1 || (uint8(out[0]) & 1) == 0) revert RuleSaysNo();
     }
 
+    /// @dev The recipient always gets the full amount. The fee is paid on top, from the wallet's balance, to the fee wallet.
     function _pay(address to, uint256 amount) internal {
         require(token.transfer(to, amount), "transfer failed");
         emit Sent(to, amount);
+        uint256 fee = (amount * feeBps) / 10_000;
+        if (fee > 0) {
+            require(token.transfer(feeRecipient, fee), "transfer failed");
+            emit FeePaid(feeRecipient, fee);
+        }
     }
 
     /// @notice Spent so far in the current day (kind 1).

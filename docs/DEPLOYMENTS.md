@@ -43,3 +43,17 @@ Circle `0x8d15e0ec20b56ccac0afe59fab188d0b72d2a3f5`, created with the "Create a 
 - Rule circuit: TapeOut processor My 4004 #29 (`0x526b96238cc418d909005e2e2d79e327da4bd0f7`), **circuit #7**, 50 NAND gates, 350 bytes, 11 inputs, 1 output. Allow a payment only if: cycle < number of cycles AND the cycle is due AND the payroll is funded AND the worker is not yet paid for that cycle. Source: `compiler/src/payroll.mjs`, drawing: `docs/circuits/bylaw-payroll-rule.canvas.json`.
 - Checked on the live chain: the five spot cases behave as specified, and 1,590 of the 2,048 input combinations were compared with the reference with zero mismatches (the public RPC then rate-limited the rest).
 - Test payroll created from the website: `0x2ff6430fb315136f5d2711542f71834345cf86d7` (2 workers, 0.004 USDC each per cycle, 2-minute cycles, 2 cycles). Funded by the employer wallet, then all four payments released from the website. A third cycle is refused by the circuit.
+
+## Revenue wallet and fee rates (from 2026-11-25)
+
+Fees are fixed inside each contract when it is created, so the table below only applies to contracts made after the switch.
+
+| Product | Fee | Paid to |
+|---|---|---|
+| Savings circle | 1% of each pot | `0x84bd6e322833ceba08fa5130580d5b1f2fb406e9` |
+| Payroll | 1% of the payroll total | same wallet |
+| Bylaw Wallet | 0.1% added on top of each payment (recipient always gets the full amount); hard cap 1% in the contract | same wallet |
+
+Contracts made before the switch (the demo circle, the test circle `0x8d15…a3f5`, the test payroll) keep paying fees to the old dev wallet `0x11BccB28A40ee64EA0eebC3199b9B00D5359e7de`. The website treats both wallets as official.
+
+Wallet rule circuits on TapeOut My 4004 #29: #8 confirm big payments, #9 trusted or small, #10 daily cap. Behaviour checked on-chain with 270 inputs against the reference rules (0 wrong).

@@ -2,7 +2,7 @@
 import { connect, short, usdc, waitFor, waitReceipt, deployCircle, EXPLORER } from './circle.mjs';
 import { remember } from './finder.mjs';
 import { ruleBadge, showBadge } from './official.mjs';
-import { WALLET_CIRCUITS, KIND_NAME, MAX_UNITS, TRUST_DELAY, validateWallet, walletSentence, walletDeployData, readWallet, savedAt, tokenBalance, walletActions, toBase, unitsOf } from './wallet.mjs';
+import { WALLET_CIRCUITS, WALLET_DEFAULTS, feeOf, KIND_NAME, MAX_UNITS, TRUST_DELAY, validateWallet, walletSentence, walletDeployData, readWallet, savedAt, tokenBalance, walletActions, toBase, unitsOf } from './wallet.mjs';
 const $ = (id) => document.getElementById(id);
 const qs = { get: (k) => new URLSearchParams(location.search).get(k) };
 const say = (id, m, c = '') => { $(id).textContent = m; $(id).className = c; };
@@ -38,7 +38,7 @@ $('wc_review').addEventListener('click', () => {
   $('wc_err').textContent = err || ''; $('wc_sum').hidden = !!err;
   $('wc_ack').checked = false; $('wc_go').disabled = true;
   if (err) return;
-  $('wc_text').textContent = walletSentence(f);
+  $('wc_text').textContent = walletSentence({ ...f, feeBps: WALLET_DEFAULTS.feeBps });
 });
 $('wc_ack').addEventListener('change', () => { $('wc_go').disabled = !$('wc_ack').checked; });
 $('wc_go').addEventListener('click', async () => {
@@ -85,11 +85,12 @@ async function load() {
   const st = stepUsdc(), cap = W.limitA * st;
   $('wl_bal').textContent = usdc(W.balance) + ' USDC';
   $('wl_kind').textContent = KIND_NAME[W.kind] || 'Unknown rule';
-  $('wl_rule').textContent = walletSentence({ kind: W.kind, unitUsdc: st, limitA: W.limitA, limitB: W.limitB, confirmer: W.confirmer });
+  $('wl_rule').textContent = walletSentence({ kind: W.kind, unitUsdc: st, limitA: W.limitA, limitB: W.limitB, confirmer: W.confirmer, feeBps: W.feeBps });
   const mine = !!me && me === W.owner;
   let line = 'Owner ' + short(W.owner) + (mine ? ' (you)' : '');
   if (W.kind === 1) line += ` · spent today ${usdc(W.spent)} of ${cap} USDC (the day resets at midnight UTC)`;
   if (W.kind === 3) line += ` · second person ${short(W.confirmer)}`;
+  if (W.feeBps) line += ` · fee ${W.feeBps / 100}% on top of each payment`;
   $('wl_facts').innerHTML = esc(line) + ` · <a href="${EXPLORER}/address/${c}" target="_blank" rel="noopener">view on explorer</a>`;
   showBadge($('wl_badge'), ruleBadge(W, WALLET_CIRCUITS[W.kind], 'wallet'));
   $('wl_kv').innerHTML = `<b>Wallet</b><span>${c}</span><b>Token</b><span>${W.token}</span><b>Circuit</b><span>#${W.circuitId} on ${W.processor}</span><b>Netlist hash</b><span>${W.netlistHash}</span><b>Kind</b><span>${W.kind} (step ${st} USDC, limit A ${W.limitA}, limit B ${W.limitB})</span>`;
@@ -142,6 +143,8 @@ $('wl_send_go').addEventListener('click', () => {
     const to = $('wl_to').value.trim();
     if (!ADDR.test(to)) throw new Error('Enter the recipient wallet address (starts with 0x, 42 characters).');
     const base = amountOf('wl_amt');
+    const fee = feeOf(base, W.feeBps);
+    if (base + fee > W.balance) throw new Error('Not enough in this wallet. It needs ' + usdc(base + fee) + ' USDC for this payment (' + usdc(base) + ' to the recipient plus ' + usdc(fee) + ' fee), and holds ' + usdc(W.balance) + '.');
     const units = unitsOf(base, W.unit);
     if (units > MAX_UNITS) throw new Error('That amount is too large for this wallet\'s rule to check. The largest is ' + MAX_UNITS * stepUsdc() + ' USDC per payment.');
     if (W.kind === 3 && units > W.limitA) {

@@ -1,11 +1,12 @@
 // "Create a circle": builds the deploy transaction in the browser, the creator's own wallet signs it.
 import { CIRCLE_BYTECODE } from './bytecode.mjs';
+import { FEE_WALLET, CIRCLE_FEE_BPS } from './fees.mjs';
 export const DEFAULTS = {
   token: '0xB6CEceAB302E2E4948951eE7843FC24E92933061', // native USDC on X Layer
   processor: '0x526B96238cc418d909005e2E2D79e327da4BD0f7', // TapeOut My 4004 #29
   circuitId: 6,
-  feeRecipient: '0x11BccB28A40ee64EA0eebC3199b9B00D5359e7de',
-  feeBps: 100,
+  feeRecipient: FEE_WALLET,
+  feeBps: CIRCLE_FEE_BPS,
 };
 const w = (v) => BigInt(v).toString(16).padStart(64, '0');
 const a = (x) => x.toLowerCase().replace(/^0x/, '').padStart(64, '0');

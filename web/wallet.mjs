@@ -1,22 +1,27 @@
 // Bylaw Wallet: create, read, deposit, send, save recipients, propose / confirm / execute. Runs in the browser against X Layer.
 import { WALLET_BYTECODE } from './wallet-bytecode.mjs';
 import { call, send, pad, num, addr, ERRORS } from './circle.mjs';
+import { FEE_WALLET, WALLET_FEE_BPS } from './fees.mjs';
 
 // Circuit ids on TapeOut processor My 4004 #29 (X Layer). Taped out and tested on-chain.
 export const WALLET_CIRCUITS = { 1: 10, 2: 9, 3: 8 };
 export const WALLET_DEFAULTS = {
   token: '0xB6CEceAB302E2E4948951eE7843FC24E92933061',
   processor: '0x526B96238cc418d909005e2E2D79e327da4BD0f7',
+  feeRecipient: FEE_WALLET,
+  feeBps: WALLET_FEE_BPS,
 };
 export const KIND_NAME = { 1: 'Daily spending cap', 2: 'Trusted recipients, small first payments', 3: 'Big payments need a second person' };
 export const MAX_UNITS = 63;
+// The fee is added on top of a payment, from the wallet's own balance. Same rounding as the contract (down).
+export const feeOf = (base, bps) => Math.floor((base * bps) / 10000);
 export const TRUST_DELAY = 2 * 86400;
 
 const S = {
   token: '0xfc0c546a', processor: '0xce1b1d43', circuitId: '0x030c9d5c', netlistHash: '0x543862ee', owner: '0x8da5cb5b', kind: '0x04baa00b',
   unit: '0x907af6c0', limitA: '0x1f9d4eeb', limitB: '0x701dc3bf', confirmer: '0x6fc3c817', spentNow: '0xa739b50f', addedAt: '0x0c46b81a',
   proposals: '0x013cf08b', proposalCount: '0xda35c664', balance: '0xb69ef8a8', send: '0xd0679d34', saveRecipient: '0x0d512790',
-  propose: '0x589de5df', confirm: '0xba0179b5', execute: '0xfe0d94c1', transfer: '0xa9059cbb',
+  propose: '0x589de5df', confirm: '0xba0179b5', execute: '0xfe0d94c1', transfer: '0xa9059cbb', feeBps: '0x24a9d853', feeRecipient: '0x46904840',
 };
 const WALLET_ERRORS = {
   ...ERRORS,
@@ -49,22 +54,23 @@ export function validateWallet({ kind, unitUsdc, limitA, limitB, confirmer, owne
   }
   return null;
 }
-export function walletSentence({ kind, unitUsdc, limitA, limitB, confirmer }) {
+export function walletSentence({ kind, unitUsdc, limitA, limitB, confirmer, feeBps }) {
   const cap = limitA * unitUsdc;
-  if (kind === 1) return `This wallet can send at most ${cap} USDC a day, in total. Any payment that would go over is refused, even if the owner's key is stolen. Amounts are counted in steps of ${unitUsdc} USDC and rounded up.`;
-  if (kind === 2) return `A saved recipient becomes trusted after 2 days and can be paid any amount. A brand-new recipient can get at most ${cap} USDC, and only after ${limitB} hour${limitB === 1 ? '' : 's'} have passed since you saved them. Amounts are counted in steps of ${unitUsdc} USDC and rounded up.`;
-  return `Payments up to ${cap} USDC go straight through. Anything above that needs ${confirmer ? confirmer.slice(0, 6) + '…' + confirmer.slice(-4) : 'a second person'} to confirm it first. Amounts are counted in steps of ${unitUsdc} USDC and rounded up.`;
+  const fee = feeBps ? ` A ${feeBps / 100}% Bylaw fee is added on top of each payment, so the person you pay always gets the full amount.` : '';
+  if (kind === 1) return `This wallet can send at most ${cap} USDC a day, in total. Any payment that would go over is refused, even if the owner's key is stolen. Amounts are counted in steps of ${unitUsdc} USDC and rounded up.${fee}`;
+  if (kind === 2) return `A saved recipient becomes trusted after 2 days and can be paid any amount. A brand-new recipient can get at most ${cap} USDC, and only after ${limitB} hour${limitB === 1 ? '' : 's'} have passed since you saved them. Amounts are counted in steps of ${unitUsdc} USDC and rounded up.${fee}`;
+  return `Payments up to ${cap} USDC go straight through. Anything above that needs ${confirmer ? confirmer.slice(0, 6) + '…' + confirmer.slice(-4) : 'a second person'} to confirm it first. Amounts are counted in steps of ${unitUsdc} USDC and rounded up.${fee}`;
 }
 export function walletDeployData({ kind, unitUsdc, limitA, limitB, confirmer }) {
   const D = WALLET_DEFAULTS;
-  const head = [a(D.token), a(D.processor), w(WALLET_CIRCUITS[kind]), w(kind), w(unitUsdc * 1e6), w(limitA), w(kind === 2 ? limitB : 0), a(kind === 3 ? confirmer : '0x0')].join('');
+  const head = [a(D.token), a(D.processor), w(WALLET_CIRCUITS[kind]), w(kind), w(unitUsdc * 1e6), w(limitA), w(kind === 2 ? limitB : 0), a(kind === 3 ? confirmer : '0x0'), a(D.feeRecipient), w(D.feeBps)].join('');
   return WALLET_BYTECODE + head;
 }
 
 export async function readWallet(c) {
   const g = (sel, ...args) => call(c, sel + args.map((x) => pad(x)).join(''));
-  const [token, processor, circuitId, owner, kind, unit, limitA, limitB, confirmer, spent, balance, count, netlistHash] = await Promise.all([
-    g(S.token), g(S.processor), g(S.circuitId), g(S.owner), g(S.kind), g(S.unit), g(S.limitA), g(S.limitB), g(S.confirmer), g(S.spentNow), g(S.balance), g(S.proposalCount), g(S.netlistHash),
+  const [token, processor, circuitId, owner, kind, unit, limitA, limitB, confirmer, spent, balance, count, netlistHash, feeBps, feeRecipient] = await Promise.all([
+    g(S.token), g(S.processor), g(S.circuitId), g(S.owner), g(S.kind), g(S.unit), g(S.limitA), g(S.limitB), g(S.confirmer), g(S.spentNow), g(S.balance), g(S.proposalCount), g(S.netlistHash), g(S.feeBps), g(S.feeRecipient),
   ]);
   const n = num(count);
   const proposals = await Promise.all([...Array(n).keys()].map(async (i) => {
@@ -73,7 +79,7 @@ export async function readWallet(c) {
   }));
   return {
     token: addr(token), processor: addr(processor), circuitId: num(circuitId), owner: addr(owner), kind: num(kind), unit: num(unit), limitA: num(limitA), limitB: num(limitB),
-    confirmer: addr(confirmer), spent: num(spent), balance: num(balance), proposals, netlistHash, feeBps: 0,
+    confirmer: addr(confirmer), spent: num(spent), balance: num(balance), proposals, netlistHash, feeBps: num(feeBps), feeRecipient: addr(feeRecipient),
   };
 }
 export const savedAt = (c, to) => call(c, S.addedAt + pad(to)).then(num);
