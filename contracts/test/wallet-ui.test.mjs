@@ -117,3 +117,22 @@ test('official badge: accepts the new and the old fee wallet, flags any other', 
   assert.equal(ruleBadge({ ...base, feeRecipient: '0x' + '22'.repeat(20) }, 10, 'wallet').ok, false);
   assert.equal(ruleBadge({ ...base, circuitId: 9, feeRecipient: FEE_WALLET }, 10, 'wallet').ok, false);
 });
+
+test('explorer constructor args rebuilt from on-chain values equal what was deployed (circle, payroll, wallet)', async () => {
+  const { circleArgs, payrollArgs, walletArgs } = await import('../../web/verify.mjs');
+  const { deployData } = await import('../../web/create.mjs');
+  const { payrollDeployData } = await import('../../web/payroll.mjs');
+  const { CIRCLE_BYTECODE } = await import('../../web/bytecode.mjs');
+  const { PAYROLL_BYTECODE } = await import('../../web/payroll-bytecode.mjs');
+  const m = ['0x' + 'aa'.repeat(20), '0x' + 'bb'.repeat(20), '0x' + 'cc'.repeat(20)];
+  const c = deployData({ wallets: m, usdc: 12.5, periodSeconds: 604800 });
+  assert.equal(circleArgs({ ...CIRCLE_DEFAULTS, contribution: 12_500_000, period: 604800, members: m }), c.slice(CIRCLE_BYTECODE.length));
+  const p = payrollDeployData({ wallets: m, amounts: [100, 250.5, 3], periodSeconds: 86400, cycles: 4 });
+  assert.equal(payrollArgs({ ...PAY_DEFAULTS, period: 86400, cycles: 4, workers: m, amounts: [100_000_000, 250_500_000, 3_000_000] }), p.slice(PAYROLL_BYTECODE.length));
+  for (const [kind, f] of [[1, { limitA: 50, limitB: 0 }], [2, { limitA: 5, limitB: 24 }], [3, { limitA: 20, limitB: 0, confirmer: CONF }]]) {
+    const form = { kind, unitUsdc: 10, ...f };
+    const d = walletDeployData(form);
+    const state = { ...WALLET_DEFAULTS, circuitId: WALLET_CIRCUITS[kind], kind, unit: 10_000_000, limitA: f.limitA, limitB: f.limitB, confirmer: kind === 3 ? CONF : ethers.ZeroAddress };
+    assert.equal(walletArgs(state), d.slice(WALLET_BYTECODE.length));
+  }
+});

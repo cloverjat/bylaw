@@ -1,6 +1,7 @@
 // Bylaw Wallet screens: create, dashboard, deposit, send, save recipient, propose / confirm / execute.
 import { connect, short, usdc, waitFor, waitReceipt, deployCircle, EXPLORER } from './circle.mjs';
 import { remember } from './finder.mjs';
+import { walletArgs, verifyBox } from './verify.mjs';
 import { ruleBadge, showBadge } from './official.mjs';
 import { WALLET_CIRCUITS, WALLET_DEFAULTS, feeOf, KIND_NAME, MAX_UNITS, TRUST_DELAY, validateWallet, walletSentence, walletDeployData, readWallet, savedAt, tokenBalance, walletActions, toBase, unitsOf } from './wallet.mjs';
 const $ = (id) => document.getElementById(id);
@@ -92,7 +93,7 @@ async function load() {
   if (W.kind === 3) line += ` · second person ${short(W.confirmer)}`;
   $('wl_facts').innerHTML = esc(line) + ` · <a href="${EXPLORER}/address/${c}" target="_blank" rel="noopener">view on explorer</a>`;
   showBadge($('wl_badge'), ruleBadge(W, WALLET_CIRCUITS[W.kind], 'wallet'));
-  $('wl_kv').innerHTML = `<b>Wallet</b><span>${c}</span><b>Token</b><span>${W.token}</span><b>Circuit</b><span>#${W.circuitId} on ${W.processor}</span><b>Netlist hash</b><span>${W.netlistHash}</span><b>Kind</b><span>${W.kind} (step ${st} USDC, limit A ${W.limitA}, limit B ${W.limitB})</span>`;
+  $('wl_kv').innerHTML = `<b>Wallet</b><span>${c}</span><b>Token</b><span>${W.token}</span><b>Circuit</b><span>#${W.circuitId} on ${W.processor}</span><b>Netlist hash</b><span>${W.netlistHash}</span><b>Kind</b><span>${W.kind} (step ${st} USDC, limit A ${W.limitA}, limit B ${W.limitB})</span>` + verifyBox(walletArgs(W), 'BylawWallet.standard-input.json');
   $('wl_conn').hidden = !!me;
   $('wl_dep').hidden = !me;
   $('wl_own').hidden = !mine;

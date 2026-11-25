@@ -51,6 +51,7 @@ import { DEMO_CIRCLE, wallet, readCircle, connect, actions, waitFor, allowanceOf
 import { validate, deployData } from './create.mjs';
 import { remember, renderFinder } from './finder.mjs';
 import { ruleBadge, showBadge } from './official.mjs';
+import { circleArgs, verifyBox } from './verify.mjs';
 let me = null, state = null, allowance = 0;
 const setMode = (dev) => { document.body.classList.toggle('dev', dev); $('m_dev').classList.toggle('on', dev); $('m_simple').classList.toggle('on', !dev); };
 $('m_simple').addEventListener('click', () => setMode(false));
@@ -110,7 +111,7 @@ async function refresh() {
     (done || s.failed ? '' : left > 0 ? `This round's time ends in about ${Math.ceil(left / 60)} min.` : 'This round\'s time is over.') +
     ` <a href="${EXPLORER}/address/${c}" target="_blank" rel="noopener">View on the blockchain explorer</a>`;
   showBadge($('cbadge'), ruleBadge(s, 6, 'circle'));
-  $('ckv').innerHTML = `<b>Circle</b><span>${c}</span><b>Token</b><span>${s.token}</span><b>Circuit</b><span>#${s.circuitId} on ${s.processor}</span><b>Netlist hash</b><span>${s.netlistHash}</span><b>Fee</b><span>${s.feeBps} bps to ${s.feeRecipient}</span><b>Round</b><span>${s.round} (paidCount ${s.paidCount})</span>`;
+  $('ckv').innerHTML = `<b>Circle</b><span>${c}</span><b>Token</b><span>${s.token}</span><b>Circuit</b><span>#${s.circuitId} on ${s.processor}</span><b>Netlist hash</b><span>${s.netlistHash}</span><b>Fee</b><span>${s.feeBps} bps to ${s.feeRecipient}</span><b>Round</b><span>${s.round} (paidCount ${s.paidCount})</span>` + verifyBox(circleArgs(s), 'BylawCircle-v2.standard-input.json (circles made after 25 Nov 2026) or BylawCircle.standard-input.json (earlier)');
   const n = nextStep();
   $('cta').disabled = !n || !n.act;
   $('cta').textContent = n ? n.label : done ? 'All done' : 'Closed';
