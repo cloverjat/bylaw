@@ -79,6 +79,15 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--mintd);font-weight:60
 .kv{display:grid;grid-template-columns:130px 1fr;gap:4px 10px;font-size:13px;word-break:break-all}.kv b{color:var(--mut);font-weight:600}
 footer{padding:20px 0 40px}
 @media(max-width:520px){.hero{padding-top:30px}.cta2,.cta3{display:block;text-align:center;margin:0 0 8px}}
+
+.side{position:fixed;left:0;top:96px;bottom:0;width:210px;padding:18px 12px;border-right:1px solid var(--line);background:rgba(7,18,13,.6);z-index:10;overflow:auto}
+.side a{display:flex;gap:10px;align-items:center;padding:11px 12px;margin-bottom:6px;border-radius:12px;color:var(--mut);text-decoration:none;font-weight:600;border:1px solid transparent;cursor:pointer}
+.side a i{font-style:normal;width:22px;text-align:center}
+.side a:hover{color:var(--ink);background:var(--card)}
+.side a.on{color:var(--mint);background:var(--card2);border-color:var(--line)}
+.vhide{display:none!important}
+@media(min-width:900px){body.hasside .wrap,body.hasside .hero .wrap{margin-left:max(230px,calc(50vw - 430px + 105px))}body.hasside nav .wrap{margin-left:auto;margin-right:auto}}
+@media(max-width:899px){.side{position:sticky;top:49px;width:auto;bottom:auto;display:flex;gap:6px;overflow-x:auto;padding:8px 12px;border-right:0;border-bottom:1px solid var(--line);background:rgba(7,18,13,.92);backdrop-filter:blur(8px)}.side a{margin:0;white-space:nowrap;padding:8px 12px}}
 </style></head><body>
 <div class="splash" id="splash"><button class="langbtn slang" data-lang-btn>中文</button><div class="box">
 <div class="slogo">By<span>law</span></div>
@@ -93,15 +102,22 @@ footer{padding:20px 0 40px}
 <div class="banner">Experimental and unaudited. Start with a small amount. Rules cannot be edited after you create them.</div>
 <nav><div class="wrap"><div class="logo">By<span>law</span></div>
 <div class="navr"><button class="langbtn" data-lang-btn>中文</button><button class="navconn" id="navconn">Connect wallet</button></div></div></nav>
+<aside class="side" id="side">
+<a data-view="home"><i>&#127968;</i>Home</a>
+<a data-view="circle"><i>&#128101;</i>Savings Circle</a>
+<a data-view="payroll"><i>&#128197;</i>Payroll</a>
+<a data-view="wallet"><i>&#128091;</i>Bylaw Wallet</a>
+<a data-view="lab"><i>&lt;/&gt;</i>Rule Lab</a>
+</aside>
 <div class="hero"><div class="wrap">
 <h1>Rules your money <span>can't break.</span></h1>
 <p>Save, pay and split money with rules locked on the blockchain. No middleman. No cheating. Not the organizer, not even us.</p>
-<a class="cta2" href="#walCreate">Create a rule &rarr;</a><a class="cta3" href="#tpl">Explore the rules</a>
+<a class="cta2" data-view="wallet" href="#walCreate">Create a rule &rarr;</a><a class="cta3" data-view="lab" href="#tpl">Explore the rules</a>
 <div class="tiles">
-<a class="tile" href="#createCard"><i>&#128101;</i><b>Savings Circle</b><small>Save together</small></a>
-<a class="tile" href="#payCreate"><i>&#128197;</i><b>Payroll</b><small>Automate payments</small></a>
-<a class="tile" href="#walCreate"><i>&#128091;</i><b>Bylaw Wallet</b><small>Rule-based wallet</small></a>
-<a class="tile" href="#tpl"><i>&lt;/&gt;</i><b>Rule Lab</b><small>See how rules work</small></a>
+<a class="tile" data-view="circle" href="#createCard"><i>&#128101;</i><b>Savings Circle</b><small>Save together</small></a>
+<a class="tile" data-view="payroll" href="#payCreate"><i>&#128197;</i><b>Payroll</b><small>Automate payments</small></a>
+<a class="tile" data-view="wallet" href="#walCreate"><i>&#128091;</i><b>Bylaw Wallet</b><small>Rule-based wallet</small></a>
+<a class="tile" data-view="lab" href="#tpl"><i>&lt;/&gt;</i><b>Rule Lab</b><small>See how rules work</small></a>
 </div></div></div>
 <div class="wrap">
 <h2>How it works</h2>

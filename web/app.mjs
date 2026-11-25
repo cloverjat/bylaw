@@ -49,6 +49,7 @@ run();
 // ---- Live circle dashboard ----
 import { DEMO_CIRCLE, wallet, readCircle, connect, actions, waitFor, allowanceOf, short, usdc, EXPLORER, deployCircle, waitReceipt } from './circle.mjs';
 import { validate, deployData } from './create.mjs';
+import { initViews } from './views.mjs';
 import { initI18n } from './i18n.mjs';
 import { mountActivity } from './activity.mjs';
 import './splash.mjs';
@@ -200,6 +201,7 @@ const showAcct = (a) => { navBtn.textContent = a ? short(a) : 'Connect wallet'; 
 window.addEventListener('bylaw:account', (e) => showAcct(e.detail));
 navBtn.addEventListener('click', async () => { try { showAcct(await connect()); } catch (e) { navBtn.textContent = 'Connect wallet'; alert(e.message || 'Could not connect.'); } });
 
+initViews();
 initI18n();
 
 // Progress strips on the create forms: 1 fill in, 2 review, 3 confirm in wallet.

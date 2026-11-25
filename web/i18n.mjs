@@ -1,6 +1,7 @@
 import { dyn } from './i18n-dyn.mjs';
 // English / Chinese (Simplified). Static page text is swapped in place; the choice is remembered on this device.
 export const ZH = {
+  'Home': '首页',
   'Experimental and unaudited. Start with a small amount. Rules cannot be edited after you create them.': '实验性产品，未经审计。请先用小额试用。规则创建后无法修改。',
   'Connect wallet': '连接钱包',
   'Rules your money': '让你的钱',
