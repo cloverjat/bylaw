@@ -8,6 +8,7 @@ Everything Bylaw charges, in one place. The website stays clean; this page is th
 |---|---|---|---|
 | Savings circle | **1%** of each pot | The pot (members never pay extra) | Taken from the pot when it is paid out, sent to the fee wallet in the same transaction |
 | Payroll | **1%** of the payroll total | The employer, once, when funding | The employer approves and funds `total + fee`; the fee goes to the fee wallet at funding |
+| Escrow (agreement) | **1%** of the deal amount | The buyer, once, when locking the money | The buyer approves and locks `amount + fee`; the fee goes to the fee wallet when locking |
 | Bylaw Wallet | **0.1%** of each payment | The wallet owner | Added **on top** of the payment from the wallet's balance. The recipient always receives the full amount. The fee does not count toward the daily cap or the second-person limit |
 | Creating a circle, payroll or wallet | No Bylaw fee | | Only the network gas in OKB |
 | Reading, proving rules, the website | Free | | |
