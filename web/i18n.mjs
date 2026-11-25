@@ -1,6 +1,22 @@
 import { dyn } from './i18n-dyn.mjs';
 // English / Chinese (Simplified). Static page text is swapped in place; the choice is remembered on this device.
 export const ZH = {
+  '3. Payments are released': '3. 分期放款',
+  'For paying a creator, hiring someone or buying something. The buyer locks the full amount once, and it is paid out in installments by a public rule: when the buyer approves each one, or automatically when it is due. Nobody can take the money back, and the buyer can hold one installment at a time if a referee was named.': '适用于向创作者付款、雇人或买东西。买方一次性锁定全部金额，由公开规则分期放款：买方逐笔确认，或到期自动放款。没有人可以把钱取回；如果指定了裁判，买方可以暂停其中一笔。',
+  'e.g. Three videos for Project X': '例如：为 X 项目制作三个视频',
+  "Seller's wallet address (the person who gets paid)": '卖方钱包地址（收款的人）',
+  'Amount for each payment (USDC)': '每笔付款金额（USDC）',
+  'How often are payments made?': '多久付款一次？',
+  'Once': '一次',
+  'Every week': '每周',
+  'Every 2 weeks': '每两周',
+  'Every month (30 days)': '每月（30 天）',
+  'How many payments?': '一共付几笔？',
+  'When is the single payment due? (days from locking)': '这笔付款何时到期？（锁定后的天数）',
+  'Referee (optional): a neutral wallet both sides trust, who decides if the buyer disputes a payment': '裁判（可选）：双方都信任的中立钱包，在买方对某笔付款提出异议时做出裁决',
+  '0x... (leave empty for none)': '0x…（不需要就留空）',
+  'e.g. Seller delivers one video per week for 3 weeks. Buyer approves each when it is delivered.': '例如：卖方每周交付一个视频，共 3 周。买方在收到后逐个确认。',
+  "This cannot be edited or undone. I checked the seller's wallet address, the amounts and the terms.": '此操作无法修改或撤销。我已核对卖方的钱包地址、金额和条款。',
   'Escrow': '托管',
   'Safe deals and contracts': '安全的交易与合同',
   'Escrow (agreements)': '托管（协议）',

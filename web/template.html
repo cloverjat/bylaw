@@ -221,32 +221,35 @@ footer{padding:20px 0 40px}
 <h2>Escrow (agreements)</h2>
 <div class="card" id="escCard" hidden>
 <b id="ec_title">Your agreement</b>
-<div class="prog" id="ec_prog"><span>1. Seller accepts</span><span>2. Buyer locks the money</span><span>3. Buyer approves</span><span>4. Money released</span></div>
+<div class="prog" id="ec_prog"><span>1. Seller accepts</span><span>2. Buyer locks the money</span><span>3. Payments are released</span></div>
 <p class="sentence" id="ec_terms"></p>
 <p class="note" id="ec_check"></p>
 <p id="ebadge" hidden></p>
 <ul class="members" id="ec_list"></ul>
 <button class="cta" id="ec_cta" disabled>Connect your wallet</button>
-<button class="ghost" id="ec_alt" hidden></button>
 <p class="note" id="ec_help"></p>
+<ul class="members" id="ec_rows"></ul>
 <p id="ec_msg"></p>
 <p class="note" id="ec_facts"></p>
 <div class="activity"><b>Activity</b><ul class="members" id="eact"></ul><small class="note">The last hour, kept on this device. <a id="eact_more" target="_blank" rel="noopener">Full history on the explorer</a></small></div>
 <div class="dev-only"><div class="kv" id="ec_kv"></div></div>
 </div>
 <div class="card" id="escCreate">
-<p class="note">For buying something, hiring someone or signing a deal between two people. Write the terms, and the money only moves by the rule: the seller accepts, the buyer locks the money, and it is released only when the buyer approves. If the deadline passes without approval, it goes back to the buyer.</p>
-<label>Deal name<input id="ec_name" placeholder="e.g. Plot 7 purchase"></label>
-<label>Seller's wallet address<input id="ec_seller" placeholder="0x..."></label>
-<label>Amount (USDC)<input id="ec_amt" type="number" min="0" step="0.01" value="100"></label>
-<label>Deadline: how long can the buyer wait for delivery?<span style="display:flex;gap:8px"><input id="ec_per" type="number" min="1" value="7" style="flex:1"><select id="ec_unit" style="flex:1"><option value="3600">hours</option><option value="86400" selected>days</option></select></span></label>
-<label>Terms of the deal (both sides read the same text)<textarea id="ec_text" placeholder="e.g. Seller delivers the signed land documents for plot 7 within 7 days. Buyer approves when they receive them."></textarea></label>
+<p class="note">For paying a creator, hiring someone or buying something. The buyer locks the full amount once, and it is paid out in installments by a public rule: when the buyer approves each one, or automatically when it is due. Nobody can take the money back, and the buyer can hold one installment at a time if a referee was named.</p>
+<label>Deal name<input id="ec_name" placeholder="e.g. Three videos for Project X"></label>
+<label>Seller's wallet address (the person who gets paid)<input id="ec_seller" placeholder="0x..."></label>
+<label>Amount for each payment (USDC)<input id="ec_amt" type="number" min="0" step="0.01" value="100"></label>
+<label>How often are payments made?<select id="ec_sched"><option value="once">Once</option><option value="weekly">Every week</option><option value="biweekly">Every 2 weeks</option><option value="monthly">Every month (30 days)</option></select></label>
+<label id="ec_cntw" hidden>How many payments?<input id="ec_cnt" type="number" min="1" max="24" value="3"></label>
+<label id="ec_dlw">When is the single payment due? (days from locking)<input id="ec_dl" type="number" min="1" value="7"></label>
+<label>Referee (optional): a neutral wallet both sides trust, who decides if the buyer disputes a payment<input id="ec_ref" placeholder="0x... (leave empty for none)"></label>
+<label>Terms of the deal (both sides read the same text)<textarea id="ec_text" placeholder="e.g. Seller delivers one video per week for 3 weeks. Buyer approves each when it is delivered."></textarea></label>
 <p class="bad" id="ec_err"></p>
 <button class="cta" id="ec_review">Review the agreement</button>
 <div id="ec_sum" hidden>
 <p class="sentence" id="ec_sentence"></p>
 <p class="note">Creating it costs a small amount of OKB for network gas. The terms are fixed after this. Send the link to the seller so they can accept.</p>
-<label class="ack" style="display:flex;gap:10px;align-items:flex-start;margin:14px 0;padding:12px;border:2px solid #e0a43a;border-radius:12px;background:#fff8ea;font-size:15px;line-height:1.5"><input type="checkbox" id="ec_ack" style="width:22px;height:22px;flex:none;margin-top:2px"><span><b>This cannot be edited or undone.</b> I checked the seller's wallet address, the amount and the terms.</span></label>
+<label class="ack" style="display:flex;gap:10px;align-items:flex-start;margin:14px 0;padding:12px;border:2px solid #e0a43a;border-radius:12px;background:#fff8ea;font-size:15px;line-height:1.5"><input type="checkbox" id="ec_ack" style="width:22px;height:22px;flex:none;margin-top:2px"><span><b>This cannot be edited or undone.</b> I checked the seller's wallet address, the amounts and the terms.</span></label>
 <button class="cta" id="ec_go" disabled>Create agreement (your wallet will ask you to confirm)</button>
 <p id="ec_cmsg"></p></div></div>
 <h2 id="walHead" hidden>Bylaw Wallet</h2>
