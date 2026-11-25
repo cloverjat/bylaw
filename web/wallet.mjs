@@ -56,10 +56,9 @@ export function validateWallet({ kind, unitUsdc, limitA, limitB, confirmer, owne
 }
 export function walletSentence({ kind, unitUsdc, limitA, limitB, confirmer, feeBps }) {
   const cap = limitA * unitUsdc;
-  const fee = feeBps ? ` A ${feeBps / 100}% Bylaw fee is added on top of each payment, so the person you pay always gets the full amount.` : '';
-  if (kind === 1) return `This wallet can send at most ${cap} USDC a day, in total. Any payment that would go over is refused, even if the owner's key is stolen. Amounts are counted in steps of ${unitUsdc} USDC and rounded up.${fee}`;
-  if (kind === 2) return `A saved recipient becomes trusted after 2 days and can be paid any amount. A brand-new recipient can get at most ${cap} USDC, and only after ${limitB} hour${limitB === 1 ? '' : 's'} have passed since you saved them. Amounts are counted in steps of ${unitUsdc} USDC and rounded up.${fee}`;
-  return `Payments up to ${cap} USDC go straight through. Anything above that needs ${confirmer ? confirmer.slice(0, 6) + '…' + confirmer.slice(-4) : 'a second person'} to confirm it first. Amounts are counted in steps of ${unitUsdc} USDC and rounded up.${fee}`;
+  if (kind === 1) return `This wallet can send at most ${cap} USDC a day, in total. Any payment that would go over is refused, even if the owner's key is stolen. Amounts are counted in steps of ${unitUsdc} USDC and rounded up.`;
+  if (kind === 2) return `A saved recipient becomes trusted after 2 days and can be paid any amount. A brand-new recipient can get at most ${cap} USDC, and only after ${limitB} hour${limitB === 1 ? '' : 's'} have passed since you saved them. Amounts are counted in steps of ${unitUsdc} USDC and rounded up.`;
+  return `Payments up to ${cap} USDC go straight through. Anything above that needs ${confirmer ? confirmer.slice(0, 6) + '…' + confirmer.slice(-4) : 'a second person'} to confirm it first. Amounts are counted in steps of ${unitUsdc} USDC and rounded up.`;
 }
 export function walletDeployData({ kind, unitUsdc, limitA, limitB, confirmer }) {
   const D = WALLET_DEFAULTS;

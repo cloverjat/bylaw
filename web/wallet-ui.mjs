@@ -90,7 +90,6 @@ async function load() {
   let line = 'Owner ' + short(W.owner) + (mine ? ' (you)' : '');
   if (W.kind === 1) line += ` · spent today ${usdc(W.spent)} of ${cap} USDC (the day resets at midnight UTC)`;
   if (W.kind === 3) line += ` · second person ${short(W.confirmer)}`;
-  if (W.feeBps) line += ` · fee ${W.feeBps / 100}% on top of each payment`;
   $('wl_facts').innerHTML = esc(line) + ` · <a href="${EXPLORER}/address/${c}" target="_blank" rel="noopener">view on explorer</a>`;
   showBadge($('wl_badge'), ruleBadge(W, WALLET_CIRCUITS[W.kind], 'wallet'));
   $('wl_kv').innerHTML = `<b>Wallet</b><span>${c}</span><b>Token</b><span>${W.token}</span><b>Circuit</b><span>#${W.circuitId} on ${W.processor}</span><b>Netlist hash</b><span>${W.netlistHash}</span><b>Kind</b><span>${W.kind} (step ${st} USDC, limit A ${W.limitA}, limit B ${W.limitB})</span>`;

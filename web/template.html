@@ -91,7 +91,7 @@ footer{padding:20px 0 40px}
 <button class="cta" id="cn_review">Review my circle</button>
 <div id="cn_sum" hidden>
 <p class="sentence" id="cn_text"></p>
-<p class="note">A 1% fee is taken from each pot to run Bylaw. Creating the circle costs a small amount of OKB for network gas. This cannot be undone or edited later.</p>
+<p class="note">Creating the circle costs a small amount of OKB for network gas. This cannot be undone or edited later.</p>
 <label class="ack" style="display:flex;gap:10px;align-items:flex-start;margin:14px 0;padding:12px;border:2px solid #e0a43a;border-radius:12px;background:#fff8ea;font-size:15px;line-height:1.5"><input type="checkbox" id="cn_ack" style="width:22px;height:22px;flex:none;margin-top:2px"><span><b>This cannot be edited or undone.</b> I checked every wallet address and amount. A wrong address cannot be fixed after this circle is created.</span></label>
 <button class="cta" id="cn_go" disabled>Create circle (your wallet will ask you to confirm)</button>
 <p id="cn_msg"></p></div></div>
@@ -118,7 +118,7 @@ footer{padding:20px 0 40px}
 <button class="cta" id="py_review">Review my payroll</button>
 <div id="py_sum" hidden>
 <p class="sentence" id="py_text"></p>
-<p class="note">A 1% fee on the total pays for running Bylaw. Creating costs a little OKB for gas. After creating, you fund it in a second step. Terms can never be edited.</p>
+<p class="note">Creating costs a little OKB for gas. After creating, you fund it in a second step. Terms can never be edited.</p>
 <label class="ack" style="display:flex;gap:10px;align-items:flex-start;margin:14px 0;padding:12px;border:2px solid #e0a43a;border-radius:12px;background:#fff8ea;font-size:15px;line-height:1.5"><input type="checkbox" id="py_ack" style="width:22px;height:22px;flex:none;margin-top:2px"><span><b>This cannot be edited or undone.</b> I checked every wallet address and amount. A wrong address cannot be fixed after this payroll is created.</span></label>
 <button class="cta" id="py_go" disabled>Create payroll (your wallet will ask you to confirm)</button>
 <p id="py_msg"></p></div></div>
@@ -140,7 +140,7 @@ footer{padding:20px 0 40px}
 <h3 style="margin:16px 0 4px;font-size:17px">Send money</h3>
 <label>Recipient wallet address<input id="wl_to" placeholder="0x..." spellcheck="false"></label>
 <p class="note" id="wl_to_note"></p>
-<label>Amount (USDC), the recipient gets exactly this<input id="wl_amt" type="number" min="0" step="0.01" placeholder="e.g. 3"></label>
+<label>Amount (USDC)<input id="wl_amt" type="number" min="0" step="0.01" placeholder="e.g. 3"></label>
 <p class="note" id="wl_propnote" hidden>Above your limit, this creates a request that the second person must confirm first.</p>
 <p><button class="cta" id="wl_send_go">Send (the public rule checks it first)</button></p>
 <p id="wl_save" hidden><button class="ghost" id="wl_save_go">Save this recipient as trusted</button> <small>A saved recipient becomes trusted after 2 days.</small></p>
@@ -163,7 +163,7 @@ footer{padding:20px 0 40px}
 <button class="cta" id="wc_review">Review my wallet</button>
 <div id="wc_sum" hidden>
 <p class="sentence" id="wc_text"></p>
-<p class="note">Creating costs a little OKB for network gas. A small Bylaw fee (0.1%) is added on top of each payment. Limits are counted in whole steps, from 1 to 63 steps. The rule cannot be edited after creation.</p>
+<p class="note">Creating costs a little OKB for network gas. Limits are counted in whole steps, from 1 to 63 steps. The rule cannot be edited after creation.</p>
 <label class="ack" style="display:flex;gap:10px;align-items:flex-start;margin:14px 0;padding:12px;border:2px solid #e0a43a;border-radius:12px;background:#fff8ea;font-size:15px;line-height:1.5"><input type="checkbox" id="wc_ack" style="width:22px;height:22px;flex:none;margin-top:2px"><span><b>This cannot be edited or undone.</b> I checked the rule, the limits and the second person's address. Only the wallet that creates this wallet can send from it.</span></label>
 <button class="cta" id="wc_go" disabled>Create wallet (your wallet will ask you to confirm)</button>
 <p id="wc_msg"></p></div></div>
@@ -181,7 +181,7 @@ footer{padding:20px 0 40px}
 <div class="card dev-only"><b>Developer notes</b>
 <div class="kv" style="margin-top:8px"><b>Chain</b><span>X Layer, id 196</span><b>Processor</b><span>0x526b96238cc418d909005e2e2d79e327da4bd0f7 (TapeOut My 4004 #29)</span><b>Circuits</b><span>#6 circle (58 NAND), #7 payroll, #8 confirm-above, #9 trusted-or-small, #10 daily cap (wallet rules)</span><b>Circle</b><span>BylawCircle: ownerless, stores keccak256(netlist), rechecks on every payout, fee fixed at creation (max 1%)</span><b>Source</b><span><a href="https://github.com/cloverjat/bylaw">github.com/cloverjat/bylaw</a></span></div></div>
 
-<footer><p class="note">Experimental and unaudited. Use only money you can afford to lose. Not affiliated with OKX or TapeOut. The proof shows the circuit matches the rule you read; it cannot tell whether the rule is what you meant. Everything on a circle is public on the blockchain. Questions or problems: <a href="https://x.com/Bylawbuild" target="_blank" rel="noopener">@Bylawbuild on X</a>.</p></footer>
+<footer><p class="note">Experimental and unaudited. Use only money you can afford to lose. Not affiliated with OKX or TapeOut. The proof shows the circuit matches the rule you read; it cannot tell whether the rule is what you meant. Everything on a circle is public on the blockchain. Questions or problems: <a href="https://x.com/Bylawbuild" target="_blank" rel="noopener">@Bylawbuild on X</a>. <a href="https://github.com/cloverjat/bylaw/blob/main/docs/FEES.md" target="_blank" rel="noopener">Fees</a>.</p></footer>
 </div>
 <script>/*APP*/</script>
 </body></html>

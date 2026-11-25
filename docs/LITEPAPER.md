@@ -21,5 +21,9 @@ The rule is data anyone can read and re-run for free. It is proven on all inputs
 ## What is honest about v1
 Experimental and unaudited. Amounts are small whole units because exhaustive proof only scales to about 24 input pins. TapeOut is itself unaudited and owner-upgradeable, so Bylaw checks the circuit hash on every use. Order of payouts is fixed by the member list.
 
+## Fees
+
+Circles and payroll charge 1%, and Bylaw Wallet payments carry a 0.1% fee on top. The rates are written into each contract when it is created and cannot be changed afterwards. Full details, the fee wallet and examples are in [FEES.md](FEES.md).
+
 ## Roadmap
 Tape out on X Layer, deploy a live three-person Circle, ship the Vault, add an AI helper for the English-to-rule step (the proof checks its output, so it is never trusted), then private deposits with stealth addresses.

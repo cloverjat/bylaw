@@ -18,7 +18,8 @@ Pick a money rule, read it back in plain words, and Bylaw proves the circuit mat
 | Tape-out and deploy on X Layer | Done: circuit #6 (circle) and #7 (payroll) on processor #29, both run end to end (docs/DEPLOYMENTS.md) |
 | Website (`web/`): simple view for everyone, developer view for engineers. Create a circle, connect a wallet, pay in, see the rule, run the prover | Working on X Layer mainnet; tested end to end with a circle created from the site |
 | **Bylaw Payroll**: the employer funds once, a public circuit releases each worker's pay each cycle, nothing can be edited, unclaimed money returns to the employer only 90 days after the end (`contracts/src/BylawPayroll.sol`, rule = circuit #7) | Live on X Layer; test payroll paid out end to end from the website |
-| Directory of public circles by name, vault rules (daily cap, trusted recipients, confirm-big), privacy layer | Planned, not built. The vault rules are written and proven but no contract enforces them yet |
+| **Bylaw Wallet**: holds USDC and only sends through a public rule (daily cap #10, trusted or small #9, big payments need a second person #8) | Live on X Layer, tested | 
+| Directory of public circles by name, privacy layer | Planned, not built. The vault rules are written and proven but no contract enforces them yet |
 
 ## How it works
 
@@ -55,3 +56,5 @@ cd web && npm i && npm run build    # writes web/dist/index.html
 ## License
 
 MIT. Not affiliated with OKX or TapeOut.
+
+See also: [docs/FEES.md](docs/FEES.md) for every fee, [docs/FUTURE-TESTING.md](docs/FUTURE-TESTING.md) for queued real-money tests.

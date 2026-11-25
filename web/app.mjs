@@ -106,7 +106,7 @@ async function refresh() {
     return `<li><span>${who(m, i)}</span><span>${p} ${q}</span></li>`;
   }).join('');
   const left = s.roundEnd - s.now;
-  $('cfacts').innerHTML = `Each member pays ${usdc(s.contribution)} USDC a round. A ${s.feeBps / 100}% circle fee is taken from each pot automatically. Held in the circle now: ${usdc(s.balance)} USDC. ` +
+  $('cfacts').innerHTML = `Each member pays ${usdc(s.contribution)} USDC a round. Held in the circle now: ${usdc(s.balance)} USDC. ` +
     (done || s.failed ? '' : left > 0 ? `This round's time ends in about ${Math.ceil(left / 60)} min.` : 'This round\'s time is over.') +
     ` <a href="${EXPLORER}/address/${c}" target="_blank" rel="noopener">View on the blockchain explorer</a>`;
   showBadge($('cbadge'), ruleBadge(s, 6, 'circle'));
@@ -162,7 +162,7 @@ $('cn_review').addEventListener('click', () => {
   $('cn_sum').hidden = !!err;
   if (err) return;
   const pot = Math.round(f.usdc * 1e6 * f.names.length) / 1e6;
-  $('cn_text').textContent = `${f.names.join(', ')} each pay ${f.usdc} USDC every ${$('cn_per').value} ${unitName()}. Each round the whole pot (${pot} USDC, minus a 1% fee) goes to one member, in this order: ${f.names.join(', ')}. The pot is released only when everyone has paid and the round time is over.`;
+  $('cn_text').textContent = `${f.names.join(', ')} each pay ${f.usdc} USDC every ${$('cn_per').value} ${unitName()}. Each round the whole pot (${pot} USDC) goes to one member, in this order: ${f.names.join(', ')}. The pot is released only when everyone has paid and the round time is over.`;
 });
 $('cn_go').addEventListener('click', async () => {
   const f = readForm();
