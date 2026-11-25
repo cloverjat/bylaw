@@ -50,6 +50,7 @@ run();
 import { DEMO_CIRCLE, wallet, readCircle, connect, actions, waitFor, allowanceOf, short, usdc, EXPLORER, deployCircle, waitReceipt } from './circle.mjs';
 import { validate, deployData } from './create.mjs';
 import { initI18n } from './i18n.mjs';
+import { mountActivity } from './activity.mjs';
 import './splash.mjs';
 import { remember, renderFinder } from './finder.mjs';
 import { ruleBadge, showBadge } from './official.mjs';
@@ -213,3 +214,8 @@ for (const p of ['cn', 'py', 'wc']) {
   new MutationObserver(set).observe(msg, { childList: true, characterData: true, subtree: true });
   set();
 }
+
+{ const q = new URLSearchParams(location.search);
+  mountActivity('cact', () => ($('caddr').value || '').trim().toLowerCase());
+  mountActivity('pact', () => (q.get('payroll') || '').toLowerCase());
+  mountActivity('wact', () => (q.get('wallet') || '').toLowerCase()); }

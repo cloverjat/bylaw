@@ -38,6 +38,7 @@ nav{background:rgba(7,18,13,.85);backdrop-filter:blur(8px);position:sticky;top:0
 
 .prog{display:flex;gap:6px;margin:0 0 14px}.prog span{flex:1;text-align:center;font-size:12px;color:var(--mut);border-top:3px solid var(--line);padding-top:6px}
 .prog span.on{color:var(--mintd);border-color:var(--mint);font-weight:700}.prog span.done{color:var(--mut);border-color:#1c6b43}
+.activity{margin:14px 0}.activity b{color:#fff}.activity li a{color:var(--mut);font-size:12px;white-space:nowrap}
 .gloss dl{margin:10px 0 0}.gloss dt{font-weight:700;color:#fff;margin-top:12px}.gloss dd{margin:2px 0 0;color:var(--mut);font-size:15px}
 .seg{display:inline-flex;background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:3px}.seg button{background:none;color:var(--mut);border:0;border-radius:999px;padding:7px 14px;font:inherit;font-size:14px;cursor:pointer;margin:0}
 .seg button.on{background:var(--mint);color:#04140b;font-weight:700}
@@ -144,6 +145,7 @@ footer{padding:20px 0 40px}
 <p id="cmsg"></p>
 <p id="cbadge" hidden></p>
 <p class="note" id="cfacts"></p>
+<div class="activity"><b>Activity</b><ul class="members" id="cact"></ul><small class="note">The last hour, kept on this device. <a id="cact_more" target="_blank" rel="noopener">Full history on the explorer</a></small></div>
 <div class="dev-only"><div class="kv" id="ckv"></div>
 <p><button class="ghost" id="b_approve">approve()</button><button class="ghost" id="b_contribute">contribute()</button><button class="ghost" id="b_payout">payout(round)</button></p>
 <div><small>Circle address</small><input id="caddr" spellcheck="false"><button class="ghost" id="load" style="margin-top:6px">Load circle</button></div></div>
@@ -178,6 +180,7 @@ footer{padding:20px 0 40px}
 <p id="pv_msg"></p>
 <p id="pbadge" hidden></p>
 <p class="note" id="pv_facts"></p>
+<div class="activity"><b>Activity</b><ul class="members" id="pact"></ul><small class="note">The last hour, kept on this device. <a id="pact_more" target="_blank" rel="noopener">Full history on the explorer</a></small></div>
 <div class="dev-only"><div class="kv" id="pv_kv"></div></div>
 </div>
 <div class="card" id="payCreate">
@@ -222,6 +225,7 @@ footer{padding:20px 0 40px}
 </div>
 <div id="wl_props_box" hidden><h3 style="margin:16px 0 4px;font-size:17px">Payments waiting for confirmation</h3><ul class="members" id="wl_props"></ul></div>
 <p id="wl_msg"></p>
+<div class="activity"><b>Activity</b><ul class="members" id="wact"></ul><small class="note">The last hour, kept on this device. <a id="wact_more" target="_blank" rel="noopener">Full history on the explorer</a></small></div>
 <div class="dev-only"><div class="kv" id="wl_kv"></div></div>
 </div>
 <h2>Create a Bylaw Wallet</h2>

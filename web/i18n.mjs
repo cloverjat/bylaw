@@ -144,6 +144,10 @@ export const ZH = {
   "Rule": "规则",
   "Circle": "储蓄圈",
   "Your wallet is your account. There is no password and no email.": "你的钱包就是你的账户。没有密码，也不需要邮箱。",
+  "Activity": "动态",
+  "The last hour, kept on this device.": "最近一小时的记录，保存在这台设备上。",
+  "Full history on the explorer": "在区块浏览器查看完整历史",
+  "No activity in the last hour.": "最近一小时没有动态。",
   // splash + language
   'Loading': '加载中',
   'Rules your money can\'t break.': '让你的钱只守规则。',

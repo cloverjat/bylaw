@@ -101,7 +101,7 @@ export const actions = {
 
 export async function allowanceOf(s, c, owner) { return num(await call(s.token, SEL.allowance + pad(owner) + pad(c))); }
 export async function waitFor(hash) {
-  for (let i = 0; i < 60; i++) { const r = await rpc('eth_getTransactionReceipt', [hash]); if (r) return r.status === '0x1'; await new Promise((r) => setTimeout(r, 2000)); }
+  for (let i = 0; i < 60; i++) { const r = await rpc('eth_getTransactionReceipt', [hash]); if (r) { try { window.dispatchEvent(new Event('bylaw:tx')); } catch {} return r.status === '0x1'; } await new Promise((r) => setTimeout(r, 2000)); }
   return null;
 }
 export { short, usdc, EXPLORER, rpc, call, send, pad, num, addr, ERRORS };
