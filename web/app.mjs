@@ -53,9 +53,7 @@ import { remember, renderFinder } from './finder.mjs';
 import { ruleBadge, showBadge } from './official.mjs';
 import { circleArgs, verifyBox } from './verify.mjs';
 let me = null, state = null, allowance = 0;
-const setMode = (dev) => { document.body.classList.toggle('dev', dev); $('m_dev').classList.toggle('on', dev); $('m_simple').classList.toggle('on', !dev); };
-$('m_simple').addEventListener('click', () => setMode(false));
-$('m_dev').addEventListener('click', () => setMode(true));
+if (/[?&]dev=1\b/.test(location.search)) document.body.classList.add('dev'); // hidden developer view for contract builders
 
 $('caddr').value = new URLSearchParams(location.search).get('circle') || '';
 if ($('caddr').value) { $('circleCard').hidden = false; $('circleHead').hidden = false; }
@@ -192,3 +190,9 @@ renderFinder($('fd_list'), $('fd_empty'), $('fd_in'), $('fd_go'), $('fd_err'));
 
 $('cn_ack').addEventListener('change', () => { $('cn_go').disabled = !$('cn_ack').checked; });
 $('cn_review').addEventListener('click', () => { $('cn_ack').checked = false; $('cn_go').disabled = true; });
+
+// Top-bar connect button: one place to connect, shared by every section.
+const navBtn = $('navconn');
+const showAcct = (a) => { navBtn.textContent = a ? short(a) : 'Connect wallet'; navBtn.classList.toggle('on', !!a); };
+window.addEventListener('bylaw:account', (e) => showAcct(e.detail));
+navBtn.addEventListener('click', async () => { try { showAcct(await connect()); } catch (e) { navBtn.textContent = 'Connect wallet'; alert(e.message || 'Could not connect.'); } });

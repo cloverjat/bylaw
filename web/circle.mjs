@@ -62,13 +62,16 @@ export async function readCircle(c) {
 }
 
 let active = null;
+let cachedAcct = null;
 export function wallet() { return active || window.okxwallet || window.ethereum; }
 
 export async function connect() {
+  if (active && cachedAcct) return cachedAcct;
   const w = await chooseWallet();
   if (!w) throw new Error('No wallet connected. Pick a wallet, or open this page inside your wallet app.');
   active = w;
   const [account] = await w.request({ method: 'eth_requestAccounts' });
+  if (w.on) { try { w.on('accountsChanged', (a) => { cachedAcct = a && a[0] ? a[0].toLowerCase() : null; if (!cachedAcct) active = null; window.dispatchEvent(new CustomEvent('bylaw:account', { detail: cachedAcct })); }); } catch {} }
   const chain = await w.request({ method: 'eth_chainId' });
   if (chain !== CHAIN_HEX) {
     try { await w.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: CHAIN_HEX }] }); }
@@ -76,7 +79,9 @@ export async function connect() {
       await w.request({ method: 'wallet_addEthereumChain', params: [{ chainId: CHAIN_HEX, chainName: 'X Layer', nativeCurrency: { name: 'OKB', symbol: 'OKB', decimals: 18 }, rpcUrls: [RPCS[0]], blockExplorerUrls: [EXPLORER] }] });
     }
   }
-  return account.toLowerCase();
+  cachedAcct = account.toLowerCase();
+  window.dispatchEvent(new CustomEvent('bylaw:account', { detail: cachedAcct }));
+  return cachedAcct;
 }
 
 async function send(from, to, data, errs = ERRORS) {
