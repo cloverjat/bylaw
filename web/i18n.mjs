@@ -1,3 +1,4 @@
+import { dyn } from './i18n-dyn.mjs';
 // English / Chinese (Simplified). Static page text is swapped in place; the choice is remembered on this device.
 export const ZH = {
   'Experimental and unaudited. Start with a small amount. Rules cannot be edited after you create them.': '实验性产品，未经审计。请先用小额试用。规则创建后无法修改。',
@@ -181,13 +182,13 @@ export const ZH_PLACEHOLDER = {
 let lang = 'en';
 const flat = (s) => s.replace(/\s+/g, ' ').trim();
 export const getLang = () => lang;
-export function t(s) { if (lang !== 'zh') return s; return ZH[flat(s)] || s; }
+export function t(s) { if (lang !== 'zh') return s; return ZH[flat(s)] || dyn(flat(s)) || s; }
 
 function xlate(node) {
   const raw = node.nodeValue; const key = flat(raw);
   if (!key) return;
   if (lang === 'zh') {
-    const z = ZH[key];
+    const z = ZH[key] || dyn(key);
     if (z) { if (node.__en === undefined) node.__en = raw; node.nodeValue = (raw.match(/^\s*/)[0]) + z + (raw.match(/\s*$/)[0]); }
   } else if (node.__en !== undefined) { node.nodeValue = node.__en; delete node.__en; }
 }
