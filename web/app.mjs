@@ -50,6 +50,7 @@ run();
 import { DEMO_CIRCLE, wallet, readCircle, connect, actions, waitFor, allowanceOf, short, usdc, EXPLORER, deployCircle, waitReceipt } from './circle.mjs';
 import { validate, deployData } from './create.mjs';
 import { remember, renderFinder } from './finder.mjs';
+import { ruleBadge, showBadge } from './official.mjs';
 let me = null, state = null, allowance = 0;
 const setMode = (dev) => { document.body.classList.toggle('dev', dev); $('m_dev').classList.toggle('on', dev); $('m_simple').classList.toggle('on', !dev); };
 $('m_simple').addEventListener('click', () => setMode(false));
@@ -108,6 +109,7 @@ async function refresh() {
   $('cfacts').innerHTML = `Each member pays ${usdc(s.contribution)} USDC a round. A ${s.feeBps / 100}% circle fee is taken from each pot automatically. Held in the circle now: ${usdc(s.balance)} USDC. ` +
     (done || s.failed ? '' : left > 0 ? `This round's time ends in about ${Math.ceil(left / 60)} min.` : 'This round\'s time is over.') +
     ` <a href="${EXPLORER}/address/${c}" target="_blank" rel="noopener">View on the blockchain explorer</a>`;
+  showBadge($('cbadge'), ruleBadge(s, 6, 'circle'));
   $('ckv').innerHTML = `<b>Circle</b><span>${c}</span><b>Token</b><span>${s.token}</span><b>Circuit</b><span>#${s.circuitId} on ${s.processor}</span><b>Netlist hash</b><span>${s.netlistHash}</span><b>Fee</b><span>${s.feeBps} bps to ${s.feeRecipient}</span><b>Round</b><span>${s.round} (paidCount ${s.paidCount})</span>`;
   const n = nextStep();
   $('cta').disabled = !n || !n.act;

@@ -1,5 +1,6 @@
 import { connect, short, usdc, waitFor, waitReceipt, deployCircle, EXPLORER } from './circle.mjs';
 import { remember } from './finder.mjs';
+import { ruleBadge, showBadge } from './official.mjs';
 import { validatePayroll, payrollTotals, payrollDeployData, readPayroll, payrollActions, payrollAllowance, RECLAIM_DELAY } from './payroll.mjs';
 const $ = (id) => document.getElementById(id);
 const qs = { get: (k) => new URLSearchParams(location.search).get(k) };
@@ -81,6 +82,7 @@ async function load() {
   else if (S.funded && mine && now() >= S.start + S.cycles * S.period + RECLAIM_DELAY && !S.reclaimed && S.total > S.paidOut) cta = { label: 'Take back unclaimed money: ' + usdc(S.total - S.paidOut) + ' USDC', act: 'reclaim', help: 'More than 90 days after the last cycle.' };
   else if (S.funded && me) cta.help = done === all ? 'Every cycle has been paid. This payroll is finished.' : 'The next cycle ends ' + new Date(dueAt(S.paid.findIndex((r) => r.some((x) => !x))) * 1000).toLocaleString() + '.';
   $('pv_cta').textContent = cta.label; $('pv_cta').dataset.act = cta.act; $('pv_cta').disabled = !cta.act; $('pv_help').textContent = cta.help;
+  showBadge($('pbadge'), ruleBadge(S, 7, 'payroll'));
   $('pv_facts').innerHTML = `Employer ${short(S.boss)} · total ${usdc(S.total)} USDC · ${S.cycles} cycles of ${Math.round(S.period / 3600 * 100) / 100} hours · <a href="${EXPLORER}/address/${qs.get('payroll')}">view on explorer</a>`;
 }
 $('pv_cta').addEventListener('click', async () => {

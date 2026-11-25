@@ -56,8 +56,9 @@ export function payrollDeployData({ wallets, amounts, periodSeconds, cycles }) {
 
 export async function readPayroll(c) {
   const g = async (sel, ...args) => call(c, sel + args.map((x) => pad(x.toString(16))).join(''));
-  const [n, total, paidOut, start, funded, reclaimed, period, cycles, boss, fee, token] = await Promise.all([
+  const [n, total, paidOut, start, funded, reclaimed, period, cycles, boss, fee, token, processor, circuitId, feeRecipient, feeBps] = await Promise.all([
     g(S.workerCount), g(S.total), g(S.paidOut), g(S.start), g(S.funded), g(S.reclaimed), g(S.period), g(S.cycles), g(S.boss), g(S.fee), call(c, '0xfc0c546a'),
+    call(c, '0xce1b1d43'), call(c, '0x030c9d5c'), call(c, '0x46904840'), call(c, '0x24a9d853'),
   ]);
   const count = num(n), cyc = num(cycles);
   const workers = [], amounts = [];
@@ -69,7 +70,7 @@ export async function readPayroll(c) {
     (paid[k] ||= [])[i] = num(await g(S.paid, k, i)) === 1;
   })));
   return { count, cycles: cyc, workers, amounts, paid, total: num(total), paidOut: num(paidOut), start: num(start), funded: num(funded) === 1,
-    reclaimed: num(reclaimed) === 1, period: num(period), boss: addr(boss), fee: num(fee), token: addr(token) };
+    reclaimed: num(reclaimed) === 1, period: num(period), boss: addr(boss), fee: num(fee), token: addr(token), processor: addr(processor), circuitId: num(circuitId), feeRecipient: addr(feeRecipient), feeBps: num(feeBps) };
 }
 export const payrollAllowance = (s, owner, c) => call(s.token, S.allowance + pad(owner) + pad(c)).then(num);
 
