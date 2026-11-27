@@ -89,7 +89,7 @@ function nextStep() {
   if (everyonePaid) return { label: 'Everyone has paid. The pot unlocks in about ' + left + ' min', act: null, help: 'The rule only releases the pot when everyone has paid and the round time is over.' };
   const missing = s.paid.filter((p) => !p).length;
   if (s.now >= s.roundEnd + GRACE) return { label: 'Someone never paid: close this circle and refund everyone', act: 'declareFailed', help: 'The 7-day grace period is over. Anyone can close the circle, and then everyone who paid can take their money back.' };
-  return { label: 'Waiting for ' + missing + ' more to pay', act: null, help: idx < 0 ? 'This wallet is not a member of this circle.' : idx >= 0 && s.paid[idx] ? 'You have paid. The pot is released only when everyone has paid and the round time is over. If someone has not paid 7 days after the round ends, the circle can be closed and everyone refunded.' : '' };
+  return { label: 'Waiting for ' + missing + ' more to pay', act: null, help: idx < 0 ? 'The connected wallet is not one of the circle members. In your wallet app, switch to a member account (the short addresses listed above), then connect again.' : idx >= 0 && s.paid[idx] ? 'You have paid. The pot is released only when everyone has paid and the round time is over. If someone has not paid 7 days after the round ends, the circle can be closed and everyone refunded.' : '' };
 }
 
 async function refresh() {

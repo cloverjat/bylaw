@@ -67,7 +67,7 @@ export const EXACT = {
   'The rule only releases the pot when everyone has paid and the round time is over.': '只有所有人都已付款且本轮时间结束后，规则才会发放资金池。',
   'Someone never paid: close this circle and refund everyone': '有人一直没付款：关闭此储蓄圈并退款给所有人',
   'The 7-day grace period is over. Anyone can close the circle, and then everyone who paid can take their money back.': '7 天宽限期已结束。任何人都可以关闭储蓄圈，之后所有已付款的人都可以取回自己的钱。',
-  'This wallet is not a member of this circle.': '这个钱包不是此储蓄圈的成员。',
+  'The connected wallet is not one of the circle members. In your wallet app, switch to a member account (the short addresses listed above), then connect again.': '当前连接的钱包不是此储蓄圈的成员。请在钱包应用中切换到成员账户（上方列出的短地址），然后重新连接。',
   'You have paid. The pot is released only when everyone has paid and the round time is over. If someone has not paid 7 days after the round ends, the circle can be closed and everyone refunded.': '你已付款。只有所有人都付款且本轮时间结束后，才会发放资金池。如果本轮结束 7 天后仍有人未付款，储蓄圈可以被关闭并退款给所有人。',
   'Loading from X Layer...': '正在从 X Layer 加载…',
   'Could not read this address as a Bylaw circle.': '无法将此地址识别为 Bylaw 储蓄圈。',
@@ -84,7 +84,6 @@ export const EXACT = {
   'got their turn': '已轮到过', 'gets this round': '本轮领取', 'paid': '已付款', 'not paid yet': '尚未付款',
   'All done': '全部完成', 'Closed': '已关闭',
   // circle errors from the chain
-  'This wallet is not a member of the circle.': '这个钱包不是此储蓄圈的成员。',
   'This wallet already paid for this round.': '这个钱包已经为本轮付过款。',
   'The circle is finished: every member has been paid.': '储蓄圈已结束：每位成员都已领取。',
   'The circle was closed because someone did not pay in time.': '由于有人没有按时付款，储蓄圈已关闭。',

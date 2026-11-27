@@ -12,7 +12,7 @@ const SEL = {
   allowance: '0xdd62ed3e', declareFailed: '0xf4a6d373', claimRefund: '0xb5545a3c', approve: '0x095ea7b3', contribute: '0xd7bb99ba', payout: '0x153f2b4b',
 };
 const ERRORS = {
-  '0x291fc442': 'This wallet is not a member of the circle.',
+  '0x291fc442': 'The connected wallet is not one of the circle members. In your wallet app, switch to a member account (the short addresses listed above), then connect again.',
   '0xd70a0e30': 'This wallet already paid for this round.',
   '0x5ea6e641': 'The circle is finished: every member has been paid.',
   '0x74566680': 'The circle was closed because someone did not pay in time.',
