@@ -119,6 +119,6 @@ async function act(a, k) {
 }
 $('ec_cta').addEventListener('click', () => act($('ec_cta').dataset.act));
 $('ec_rows').addEventListener('click', (e) => { const b = e.target.closest('button[data-act]'); if (b) act(b.dataset.act, Number(b.dataset.k)); });
-window.addEventListener('bylaw:account', (e) => { me = e.detail || me; if (qs.get('escrow')) load(); });
+window.addEventListener('bylaw:account', (e) => { me = e.detail || null; if (qs.get('escrow')) load(); });
 load();
 setInterval(() => { if (!document.hidden) load(); }, 15000);

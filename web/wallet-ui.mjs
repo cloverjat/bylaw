@@ -161,3 +161,4 @@ $('wl_props').addEventListener('click', (e) => {
 });
 load();
 setInterval(() => { if (!document.hidden) load(); }, 15000);
+window.addEventListener('bylaw:account', (e) => { me = e.detail || null; load().catch(() => {}); });

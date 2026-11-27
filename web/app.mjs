@@ -224,3 +224,9 @@ for (const p of ['cn', 'py', 'wc']) {
   mountActivity('pact', () => (q.get('payroll') || '').toLowerCase());
   mountActivity('eact', () => (q.get('escrow') || '').toLowerCase());
   mountActivity('wact', () => (q.get('wallet') || '').toLowerCase()); }
+// Keep the circle page in step when the person switches or disconnects their account.
+window.addEventListener('bylaw:account', (e) => {
+  me = e.detail || null;
+  $('me').textContent = me ? ' Connected: ' + short(me) : '';
+  if ($('caddr').value.trim()) refresh().catch(() => {});
+});
