@@ -12,7 +12,7 @@ const SEL = {
   allowance: '0xdd62ed3e', declareFailed: '0xf4a6d373', claimRefund: '0xb5545a3c', approve: '0x095ea7b3', contribute: '0xd7bb99ba', payout: '0x153f2b4b',
 };
 const ERRORS = {
-  '0x291fc442': 'The connected wallet is not one of the circle members. In your wallet app, switch to a member account (the short addresses listed above), then connect again.',
+  '0x291fc442': 'The connected wallet is not one of the circle members. Tap your address at the top right to switch accounts, and pick one of the member addresses listed above.',
   '0xd70a0e30': 'This wallet already paid for this round.',
   '0x5ea6e641': 'The circle is finished: every member has been paid.',
   '0x74566680': 'The circle was closed because someone did not pay in time.',
@@ -64,6 +64,23 @@ export async function readCircle(c) {
 let active = null;
 let cachedAcct = null;
 export function wallet() { return active || window.okxwallet || window.ethereum; }
+
+// Lets the person pick a different account (for example to test with several wallets).
+export async function switchAccount() {
+  const w = active;
+  if (w) {
+    try { await w.request({ method: 'wallet_requestPermissions', params: [{ eth_accounts: {} }] }); } catch {}
+    if (w.disconnect) { try { await w.disconnect(); } catch {} active = null; }
+  }
+  cachedAcct = null;
+  window.dispatchEvent(new CustomEvent('bylaw:account', { detail: null }));
+  if (w && active) {
+    // injected wallet: read the account that is now selected
+    const [a] = await w.request({ method: 'eth_requestAccounts' });
+    if (a) { cachedAcct = a.toLowerCase(); window.dispatchEvent(new CustomEvent('bylaw:account', { detail: cachedAcct })); return cachedAcct; }
+  }
+  return connect();
+}
 
 export async function connect() {
   if (active && cachedAcct) return cachedAcct;
